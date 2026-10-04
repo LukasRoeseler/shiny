@@ -10,14 +10,9 @@
   header { background:#004a99; color:#fff; padding:20px 24px; }
   header h1 { margin:0; font-size:24px; }
   header p { margin:6px 0 0; font-size:13px; opacity:.9; }
-  main { max-width:1050px; margin:0 auto; padding:20px 24px 60px; }
+  main { max-width:1100px; margin:0 auto; padding:20px 24px 60px; }
   h2 { margin-top:26px; border-bottom:2px solid #eee; padding-bottom:6px; }
   h3 { margin-top:22px; }
-  .tabs { display:flex; flex-wrap:wrap; gap:6px; border-bottom:2px solid #ddd; padding:0 0 10px; margin:16px 0; }
-  .tab { background:#fff; border:1px solid #ccc; border-radius:6px 6px 0 0; padding:9px 18px; cursor:pointer; font-size:14px; }
-  .tab.active { background:#004a99; color:#fff; border-color:#004a99; }
-  .tabpanel { display:none; }
-  .tabpanel.active { display:block; }
   .status { background:#fff3cd; border:1px solid #ffecb5; color:#664d03; border-radius:6px; padding:10px 14px; margin:14px 0; font-size:14px; }
   .status.ok { background:#d1e7dd; border-color:#badbcc; color:#0f5132; }
   .controls { background:#fff; border:1px solid #ddd; border-radius:8px; padding:16px; margin:16px 0; }
@@ -26,24 +21,16 @@
   .controls label { margin-right:16px; font-size:14px; }
   .btn { background:#004a99; color:#fff; border:0; padding:10px 20px; border-radius:6px; cursor:pointer; font-size:15px; }
   .btn:hover { background:#003a7a; }
-  .cards { display:flex; flex-wrap:wrap; gap:14px; }
-  .card { background:#fff; border:1px solid #ddd; border-radius:8px; padding:14px 18px; min-width:180px; flex:1; }
-  .card b { display:block; font-size:15px; }
-  .card .es { font-size:26px; font-weight:700; }
-  .card .ci { color:#555; font-size:13px; }
-  .forest { background:#fff; border:1px solid #eee; border-radius:8px; padding:20px; margin:16px 0; overflow-x:auto; }
-  .frow { display:grid; grid-template-columns:180px 40px 1fr 90px; align-items:center; gap:10px; padding:6px 0; border-bottom:1px solid #f0f0f0; font-size:14px; }
-  .frow.head { font-weight:700; color:#444; border-bottom:2px solid #ccc; }
-  .ftrack { position:relative; height:24px; }
-  .fline { position:absolute; top:50%; left:0; right:0; height:2px; background:#d0d0d0; }
-  .fbox { position:absolute; top:50%; height:16px; transform:translateY(-50%); background:#004a99; }
-  .fzero { position:absolute; top:0; bottom:0; width:2px; background:#c00; }
-  .fnum { text-align:right; font-variant-numeric:tabular-nums; }
+  .tabs { display:flex; flex-wrap:wrap; gap:6px; border-bottom:2px solid #ddd; padding:0 0 10px; margin:16px 0; }
+  .tab { background:#fff; border:1px solid #ccc; border-radius:6px 6px 0 0; padding:9px 18px; cursor:pointer; font-size:14px; }
+  .tab.active { background:#004a99; color:#fff; border-color:#004a99; }
+  .tabpanel { display:none; }
+  .tabpanel.active { display:block; }
   table.data { border-collapse:collapse; width:100%; background:#fff; margin:12px 0; }
   table.data th, table.data td { border:1px solid #ddd; padding:8px 10px; text-align:left; font-size:14px; }
   table.data th { background:#f0f4f8; }
   table.data td.num { text-align:right; font-variant-numeric:tabular-nums; }
-  .plotimg { max-width:100%; height:auto; background:#fff; border:1px solid #eee; border-radius:6px; padding:8px; }
+  .plotimg { max-width:100%; height:auto; background:#fff; border:1px solid #eee; border-radius:6px; padding:8px; margin:8px 0; }
   .scroll { max-height:560px; overflow:auto; border:1px solid #ddd; border-radius:6px; background:#fff; padding:8px; }
   .note { font-size:12px; color:#777; }
   a { color:#004a99; }
@@ -58,9 +45,49 @@
 <main>
   <h2>About</h2>
   <p>Migrated from the former Shiny app at <a href="https://metaanalyses.shinyapps.io/bodypositions/" target="_blank">metaanalyses.shinyapps.io/bodypositions/</a> → now hosted at <a href="https://lukasroeseler.github.io/shiny/bodypositions/" target="_blank">lukasroeseler.github.io/shiny/bodypositions/</a>.</p>
-  <p>This app runs a dynamic meta-analysis of experimentally induced body position (posture/pose) effects on behavioral, self-report, and physiological dependent variables. All analyses below are computed with R using the same methods as the original app (multilevel random-effects meta-analysis, trim-and-fill, p-uniform, Hedges–Vevea selection model, PET–PEESE, p-curve, z-curve, Egger's test).</p>
+  <p>All analyses are computed <b>live in R</b> in your browser (via WebR) using the same methods and R packages as the original app (metafor, meta, robumeta, puniform, weightr, zcurve, p-curve).</p>
   <p><b>Citation:</b> Röseler, L., Körner, R., &amp; Schütz, A. (2021). <i>Dynamic Meta-Analysis</i>. <a href="https://osf.io/ns65r/" target="_blank">https://osf.io/ns65r/</a></p>
   <p><b>Data and Materials:</b> <a href="https://osf.io/vz4a6/" target="_blank">https://osf.io/vz4a6/</a> · <b>Add study:</b> <a href="https://www.soscisurvey.de/submissions_bodypositions" target="_blank">Submission portal</a></p>
+
+  <div class="status" id="status">Initializing R engine (WebR)…</div>
+
+  <h2>Controls</h2>
+  <div class="controls">
+    <fieldset><legend>DV type</legend>
+      <label><input type="checkbox" name="dv" value="Physiology" checked> Physiology</label>
+      <label><input type="checkbox" name="dv" value="Self-Reports" checked> Self-Reports</label>
+      <label><input type="checkbox" name="dv" value="Behavior" checked> Behavior</label>
+    </fieldset>
+    <fieldset><legend>Preregistration</legend>
+      <label><input type="checkbox" name="pr" value="1" checked> Preregistered</label>
+      <label><input type="checkbox" name="pr" value="2" checked> Not preregistered</label>
+    </fieldset>
+    <fieldset><legend>Type of body positions</legend>
+      <label><input type="checkbox" name="pp" value="1" checked> Poses</label>
+      <label><input type="checkbox" name="pp" value="2" checked> Postures</label>
+    </fieldset>
+    <fieldset><legend>Cultural background</legend>
+      <label><input type="checkbox" name="cu" value="1" checked> Western</label>
+      <label><input type="checkbox" name="cu" value="2" checked> Eastern</label>
+    </fieldset>
+    <fieldset><legend>Cover story</legend>
+      <label><input type="checkbox" name="cs" value="1" checked> Yes</label>
+      <label><input type="checkbox" name="cs" value="2" checked> No</label>
+    </fieldset>
+    <fieldset><legend>New and unverified submissions</legend>
+      <label><input type="checkbox" name="ck" value="1" checked> Unverified</label>
+      <label><input type="checkbox" name="ck" value="2" checked> Verified</label>
+    </fieldset>
+    <fieldset><legend>Exclude based on z-scores <span id="outlv"></span></legend>
+      <input type="range" id="outl" min="-6" max="6" step="0.1" value="-6" oninput="outlLab()"> to
+      <input type="range" id="outu" min="-6" max="6" step="0.1" value="6" oninput="outlLab()">
+    </fieldset>
+    <fieldset><legend>Year of publication <span id="yearv"></span></legend>
+      <input type="range" id="yrlo" min="1982" max="2023" step="1" value="1982" oninput="yrLab()"> to
+      <input type="range" id="yrhi" min="1982" max="2023" step="1" value="2023" oninput="yrLab()">
+    </fieldset>
+    <button class="btn" id="analyze">Analyze data</button>
+  </div>
 
   <div class="tabs">
     <button class="tab active" data-tab="summary">Summary</button>
@@ -73,62 +100,35 @@
   <section class="tabpanel active" id="summary">
     <h3>Sample Overview</h3>
     <table class="data" id="sample"><thead><tr><th>Articles</th><th>Studies</th><th>Effects</th><th>Sample size</th></tr></thead><tbody></tbody></table>
-    <p class="note">Number of research reports (articles), independent studies, effects, and total sample size for the selected set of studies (all DV types, all preregistration statuses, all years).</p>
-
     <h3>Effect Size Estimates</h3>
-    <p class="note">Estimates of Hedges' g from nine estimation models. LCL = Lower Confidence Limit, UCL = Upper Confidence Limit, k = number of effects. First reported values are selected for analyses.</p>
-    <img class="plotimg" src="bp_forest_estimates.png" alt="Forest plot of effect size estimates">
+    <p class="note">Estimates of Hedges' g from nine estimation models. LCL/UCL = confidence limits, k = number of effects.</p>
     <table class="data" id="estimates"><thead><tr><th>Model</th><th>g</th><th>LCL</th><th>UCL</th><th>k</th></tr></thead><tbody></tbody></table>
-
-    <h3>Live meta-analysis (computed in your browser with R)</h3>
-    <div class="status" id="status">Initializing R engine (WebR)…</div>
-    <div class="controls">
-      <fieldset>
-        <legend>DV type</legend>
-        <label><input type="checkbox" name="dv" value="Physiology" checked> Physiology</label>
-        <label><input type="checkbox" name="dv" value="Self-Reports" checked> Self-Reports</label>
-        <label><input type="checkbox" name="dv" value="Behavior" checked> Behavior</label>
-      </fieldset>
-      <fieldset>
-        <legend>Preregistration</legend>
-        <label><input type="checkbox" name="pr" value="Preregistered" checked> Preregistered</label>
-        <label><input type="checkbox" name="pr" value="Not preregistered" checked> Not preregistered</label>
-      </fieldset>
-      <button class="btn" id="analyze">Analyze data</button>
-    </div>
-    <div class="cards" id="cards"></div>
-    <div class="forest" id="forest-plot"></div>
-    <p class="note">This interactive section runs a DerSimonian–Laird random-effects meta-analysis live in R (WebR) on the selected subset. The static plots above use the full (default) set of studies.</p>
+    <img class="plotimg" id="plot-forest_estimates" alt="Forest plot of estimates">
   </section>
 
   <section class="tabpanel" id="forest">
     <h3>Forest Plot of All Included Studies</h3>
-    <p class="note">Scroll to see all studies. Error bars are 95% confidence intervals; the red line is g = 0.</p>
-    <div class="scroll"><img class="plotimg" src="bp_forest_studies.png" alt="Forest plot of all studies"></div>
+    <p class="note">Scroll to see all studies. Error bars are 95% CI; red line is g = 0.</p>
+    <div class="scroll"><img class="plotimg" id="plot-forest_studies" alt="Forest plot of all studies"></div>
   </section>
 
   <section class="tabpanel" id="qrppb">
     <h3>Publication Bias and Questionable Research Practices</h3>
     <p class="note">First reported values are selected for analyses.</p>
-
     <h3>Funnel Plot of Effects</h3>
-    <img class="plotimg" src="bp_funnel.png" alt="Funnel plot of effects">
-
+    <img class="plotimg" id="plot-funnel" alt="Funnel plot of effects">
     <h3>Egger's Test of Funnel Plot Asymmetry</h3>
     <table class="data" id="eggers"><thead><tr><th>Intercept</th><th>Tau²</th><th>t</th><th>p</th></tr></thead><tbody></tbody></table>
-
     <h3>P-Curve of Effects</h3>
-    <img class="plotimg" src="bp_pcurve.png" alt="P-curve of effects">
+    <img class="plotimg" id="plot-pcurve" alt="P-curve of effects">
     <p class="note">P-curve can only be plotted if there are 2 or more significant effects.</p>
-
-    <h3>Z-Curve of Effects (EM via EM, no bootstrapping)</h3>
-    <img class="plotimg" src="bp_zcurve.png" alt="Z-curve of effects">
+    <h3>Z-Curve of Effects (EM, no bootstrapping)</h3>
+    <img class="plotimg" id="plot-zcurve" alt="Z-curve of effects">
   </section>
 
   <section class="tabpanel" id="outliers">
     <h3>Distribution of Effect Sizes</h3>
-    <img class="plotimg" src="bp_violin.png" alt="Distribution of effect sizes">
-
+    <img class="plotimg" id="plot-violin" alt="Distribution of effect sizes">
     <h3>Heterogeneity (REML)</h3>
     <table class="data" id="heterogeneity"><thead><tr><th>Sigma² Level 1</th><th>Sigma² Level 2</th><th>Tau²</th><th>Q</th><th>Q (p)</th></tr></thead><tbody></tbody></table>
     <p class="note">More tools for outlier diagnostics may be added later.</p>
@@ -138,14 +138,13 @@
     <div class="section">
       <h3>About</h3>
       <p><b>Version:</b> v0.72 · <b>Last update:</b> 07 July 2022</p>
-      <p><b>Citation:</b> Röseler, L., Körner, R., &amp; Schütz, A. (2021). <i>Dynamic Meta-Analysis</i>. Retrieved from <a href="https://osf.io/ns65r/">https://osf.io/ns65r/</a></p>
+      <p><b>Citation:</b> Röseler, L., Körner, R., &amp; Schütz, A. (2021). <i>Dynamic Meta-Analysis</i>. <a href="https://osf.io/ns65r/">https://osf.io/ns65r/</a></p>
       <p><b>Data and Materials:</b> <a href="https://osf.io/vz4a6/">https://osf.io/vz4a6/</a></p>
-      <p><b>Add Study:</b> Submit new or missing studies here: <a href="https://www.soscisurvey.de/submissions_bodypositions">https://www.soscisurvey.de/submissions_bodypositions</a></p>
-      <p><b>Contact:</b> lukas.roeseler@uni-bamberg.de</p>
+      <p><b>Add Study:</b> <a href="https://www.soscisurvey.de/submissions_bodypositions">https://www.soscisurvey.de/submissions_bodypositions</a></p>
     </div>
     <div class="section">
       <h3>Methods</h3>
-      <p>Analyses use a multilevel random-effects model (restricted maximum likelihood / maximum likelihood with Knapp–Hartung adjustment) accounting for the nesting of multiple dependent variables within studies (random = ~1 | id2/id1). Publication-bias analyses include trim-and-fill, the p-uniform* method, the Hedges–Vevea selection model, PET–PEESE, p-curve, and z-curve. R packages used: metafor, meta, robumeta, puniform, weightr, zcurve, dmetar (pcurve).</p>
+      <p>Multilevel random-effects model (random = ~1 | id2/id1, ML with Knapp–Hartung adjustment). Publication-bias analyses include trim-and-fill, p-uniform*, Hedges–Vevea selection model, PET–PEESE, p-curve and z-curve. R packages used: metafor, meta, robumeta, puniform, weightr, zcurve, dmetar (p-curve).</p>
     </div>
   </section>
 </main>
@@ -153,141 +152,103 @@
 <script type="module">
 import { WebR } from "https://webr.r-wasm.org/latest/webr.mjs";
 
-// ===== Precomputed data (computed with R / metafor, meta, zcurve, puniform, weightr, robumeta) =====
-const SAMPLE = [{Articles:84, Studies:108, Effects:294, Samplesize:9094}];
-const ESTIMATES = [
-  {Model:"Random-Effects Multilevel Model", g:0.338, LCL:0.264, UCL:0.412, k:"294"},
-  {Model:"Robust Variance Estimation", g:0.359, LCL:0.264, UCL:0.455, k:"108"},
-  {Model:"Trim-and-fill", g:0.079, LCL:-0.031, UCL:0.188, k:"151"},
-  {Model:"P-uniform star", g:0.374, LCL:0.254, UCL:0.505, k:"108"},
-  {Model:"Hedges-Vevea Selection Model", g:0.354, LCL:0.229, UCL:0.48, k:"108"},
-  {Model:"P-Curve (first value)", g:0.37, LCL:null, UCL:null, k:"54"},
-  {Model:"P-Curve (last value)", g:0.387, LCL:null, UCL:null, k:"39"},
-  {Model:"Precision Effect Test", g:-0.085, LCL:-0.212, UCL:0.042, k:"108"},
-  {Model:"Precision Effect Estimate using Standard Error", g:0.096, LCL:0.007, UCL:0.185, k:"108"}
-];
-const EGGERS = [{Intercept:1.9118, Tau2:1.8465, t:5.5961, p:"< .001"}];
-const HET = [{Sigma2_Level1:0.091, Sigma2_Level2:0.0603, Tau:0, Q:1327.18, Q_p:"< .001"}];
-
-function fillTable(id, rows){
-  const tb = document.querySelector(`#${id} tbody`);
-  tb.innerHTML = rows.map(r => {
-    const cells = Object.keys(r).map(k => `<td class="num">${r[k] === null ? '—' : r[k]}</td>`).join('');
-    return `<tr>${cells}</tr>`;
-  }).join('');
-}
-fillTable('sample', SAMPLE);
-fillTable('estimates', ESTIMATES);
-fillTable('eggers', EGGERS);
-fillTable('heterogeneity', HET);
-
-// ===== Tabs =====
-document.querySelectorAll('.tab').forEach(t => {
-  t.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-    document.querySelectorAll('.tabpanel').forEach(x => x.classList.remove('active'));
-    t.classList.add('active');
-    document.getElementById(t.dataset.tab).classList.add('active');
-  });
-});
-
-// ===== Live WebR meta-analysis =====
+const PKGS = ['metafor','meta','zcurve','puniform','weightr','robumeta','poibin','stringr','dplyr','ggplot2','jsonlite'];
 let webR = null;
-const PRECOMPUTED = [
-  {group:"Overall", es:0.2551, lo:0.2101, hi:0.3001, k:294, I2:77.9},
-  {group:"Physiology", es:-0.0670, lo:-0.1412, hi:0.0072, k:50, I2:52.4},
-  {group:"Self-Reports", es:0.3291, lo:0.2679, hi:0.3903, k:190, I2:78.9},
-  {group:"Behavior", es:0.2805, lo:0.1830, hi:0.3780, k:54, I2:63.9},
-  {group:"Preregistered", es:0.0713, lo:0.0033, hi:0.1393, k:29, I2:23.5},
-  {group:"Not preregistered", es:0.2810, lo:0.2313, hi:0.3307, k:265, I2:79.5}
-];
-
-function render(rows){
-  const cards = document.getElementById('cards');
-  cards.innerHTML = rows.map(r => `
-    <div class="card"><b>${r.group}</b><span class="es">g = ${Number(r.es).toFixed(3)}</span><span class="ci">95% CI [${Number(r.lo).toFixed(3)}, ${Number(r.hi).toFixed(3)}]<br>k = ${r.k} · I² = ${Number(r.I2).toFixed(1)}%</span></div>`).join('');
-  const lo = -0.2, hi = 0.5, span = hi - lo;
-  let f = '<div class="frow head"><span>Group</span><span></span><span></span><span>g [95% CI]</span></div>';
-  for (const r of rows){
-    const x = v => ((v - lo)/span)*100;
-    const left = x(Number(r.lo)), width = x(Number(r.hi)) - x(Number(r.lo));
-    const line = x(0);
-    f += `<div class="frow"><span>${r.group}</span><span>k=${r.k}</span><div class="ftrack"><div class="fline"></div><div class="fzero" style="left:${line}%"></div><div class="fbox" style="left:${left}%;width:${Math.max(width,0.5)}%"></div></div><span class="fnum">${Number(r.es).toFixed(3)} [${Number(r.lo).toFixed(3)}, ${Number(r.hi).toFixed(3)}]</span></div>`;
-  }
-  document.getElementById('forest-plot').innerHTML = f;
-}
+let ready = false;
 
 function setStatus(text, ok){
   const el = document.getElementById('status');
   el.textContent = text;
   el.className = 'status' + (ok ? ' ok' : '');
 }
+function outlLab(){ document.getElementById('outlv').textContent = `[${document.getElementById('outl').value}, ${document.getElementById('outu').value}]`; }
+function yrLab(){ document.getElementById('yearv').textContent = `[${document.getElementById('yrlo').value}–${document.getElementById('yrhi').value}]`; }
+outlLab(); yrLab();
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.tabpanel').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.tab).classList.add('active');
+}));
 
 async function initWebR(){
   try {
     setStatus('Initializing R engine (WebR)…');
     webR = new WebR();
     await webR.init();
-    const csv = await (await fetch('bp_data.csv')).text();
-    webR.FS.writeFile('bp_data.csv', new TextEncoder().encode(csv));
-    setStatus('R engine ready. Adjust the filters and click Analyze data.', true);
+    setStatus('Installing R packages (first load can take a minute)…');
+    await webR.installPackages(PKGS);
+    setStatus('Loading packages…');
+    await webR.evalRVoid(`library(metafor);library(meta);library(zcurve);library(puniform);library(weightr);library(robumeta);library(poibin);library(stringr);library(dplyr);library(ggplot2);library(jsonlite)`);
+    // write data + helper R files into the VFS
+    const files = ['bp_full.csv','pcurve2.R','SE_from_p.R','run_analysis.R'];
+    for (const f of files){
+      const txt = await (await fetch(f)).text();
+      webR.FS.writeFile(f, new TextEncoder().encode(txt));
+    }
+    await webR.evalRVoid(`source('pcurve2.R'); source('SE_from_p.R'); source('run_analysis.R')`);
+    ready = true;
+    setStatus('R engine ready. Adjust the filters and click "Analyze data".', true);
   } catch (e) {
-    setStatus('Live R computation unavailable (' + e.message + '). Showing precomputed results.');
+    setStatus('Live R computation failed to start: ' + e.message + '. Please reload the page.');
     webR = null;
   }
 }
 
+function chk(name){ return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c => c.value); }
+
 async function analyze(){
-  const dv = [...document.querySelectorAll('input[name="dv"]:checked')].map(c => c.value);
-  const pr = [...document.querySelectorAll('input[name="pr"]:checked')].map(c => c.value);
+  if (!ready){ setStatus('R engine is still loading, please wait…'); return; }
+  const dv = chk('dv'), pr = chk('pr'), pp = chk('pp'), cu = chk('cu'), cs = chk('cs'), ck = chk('ck');
   if (!dv.length || !pr.length){ setStatus('Select at least one DV type and one preregistration option.'); return; }
-  if (!webR){ setStatus('R engine is still loading, please wait…'); return; }
-  setStatus('Computing meta-analysis with R (WebR)…');
-  const dvsel = dv.map(d => `"${d}"`).join(',');
-  const prsel = pr.map(p => p === 'Preregistered' ? '1' : '0').join(',');
+  setStatus('Computing meta-analysis with R (WebR)… this may take about a minute.');
   const rcode = `
-dl_meta <- function(g, se) {
-  if (length(g) < 2) return(c(es=NA, se=NA, tau2=NA, I2=NA, k=length(g)))
-  w <- 1/se^2; bf <- sum(w*g)/sum(w); Q <- sum(w*(g-bf)^2); k <- length(g)
-  C <- sum(w) - sum(w^2)/sum(w); tau2 <- max(0, (Q-(k-1))/C)
-  I2 <- max(0, (Q-(k-1))/Q) * 100
-  wr <- 1/(se^2+tau2); br <- sum(wr*g)/sum(wr); ser <- sqrt(1/sum(wr))
-  c(es=br, se=ser, tau2=tau2, I2=I2, k=k)
-}
-compute_groups <- function(df) {
-  results <- data.frame(group=character(), es=numeric(), se=numeric(), lo=numeric(), hi=numeric(), tau2=numeric(), I2=numeric(), k=numeric(), stringsAsFactors=FALSE)
-  add <- function(nm, d) {
-    if (nrow(d) < 2) return(invisible(NULL))
-    m <- dl_meta(d$g, d$se)
-    results <<- rbind(results, data.frame(group=nm, es=as.numeric(m['es']), se=as.numeric(m['se']), lo=as.numeric(m['es'])-1.96*as.numeric(m['se']), hi=as.numeric(m['es'])+1.96*as.numeric(m['se']), tau2=as.numeric(m['tau2']), I2=as.numeric(m['I2']), k=as.numeric(m['k'])))
-  }
-  add("Overall", df)
-  for (dv in unique(df$dvtype)) add(dv, df[df$dvtype==dv,])
-  add("Preregistered", df[df$preregistered==1,])
-  add("Not preregistered", df[df$preregistered==0,])
-  results
-}
-df <- read.csv("bp_data.csv")
-df <- df[!is.na(df$g) & !is.na(df$se), ]
-df <- df[df$dvtype %in% c(${dvsel}) & df$preregistered %in% c(${prsel}), ]
-compute_groups(df)
-`;
+    suppressWarnings(suppressMessages(run_analysis(
+      dvtype=c(${dv.map(x=>`"${x}"`).join(',')}),
+      prereg=c(${pr.join(',')}),
+      poseposture=c(${pp.join(',')}),
+      culture=c(${cu.join(',')}),
+      coverstory=c(${cs.join(',')}),
+      checked=c(${ck.join(',')}),
+      year=c(${document.getElementById('yrlo').value},${document.getElementById('yrhi').value}),
+      outliers=c(${document.getElementById('outl').value},${document.getElementById('outu').value})
+    )))
+    TRUE
+  `;
   try {
-    const res = await webR.evalR(rcode);
-    const js = await res.toJs();
-    const names = js.names;
-    const cols = js.values.map(c => c.values);
-    const rows = [];
-    for (let i = 0; i < cols[0].length; i++){ const r = {}; names.forEach((n,j) => r[n] = cols[j][i]); rows.push(r); }
-    render(rows);
-    setStatus('Computed live in R (DerSimonian–Laird random-effects meta-analysis).', true);
+    await webR.evalRVoid(rcode);
+    const resBytes = await webR.FS.readFile('results.json');
+    const tables = JSON.parse(new TextDecoder().decode(resBytes));
+    renderTables(tables);
+    const plots = ['forest_estimates','forest_studies','funnel','pcurve','zcurve','violin'];
+    for (const p of plots){
+      try {
+        const data = await webR.FS.readFile('plot_' + p + '.png');
+        const blob = new Blob([data], {type:'image/png'});
+        const img = document.getElementById('plot-' + p);
+        if (img){ img.src = URL.createObjectURL(blob); }
+      } catch (e) { /* plot may be skipped if not computable */ }
+    }
+    setStatus('Computed live in R. k = ' + (tables.sample && tables.sample[0] ? tables.sample[0].Effects : '?') + ' effects.', true);
   } catch (e) {
-    setStatus('R computation failed: ' + e.message + '. Showing precomputed results.');
+    setStatus('R computation failed: ' + e.message);
   }
 }
 
+function fillTable(id, rows, keys){
+  const tb = document.querySelector(`#${id} tbody`);
+  tb.innerHTML = rows.map(r => `<tr>${keys.map(k => `<td class="num">${r[k]===null||r[k]===undefined?'—':r[k]}</td>`).join('')}</tr>`).join('');
+}
+
+function renderTables(t){
+  if (t.sample) fillTable('sample', t.sample, ['Articles','Studies','Effects','Samplesize']);
+  if (t.estimates) fillTable('estimates', t.estimates, ['Model','g','LCL','UCL','k']);
+  if (t.eggers) fillTable('eggers', t.eggers, ['Intercept','Tau2','t','p']);
+  if (t.heterogeneity) fillTable('heterogeneity', t.heterogeneity, ['Sigma2_Level1','Sigma2_Level2','Tau','Q','Q_p']);
+}
+
 document.getElementById('analyze').addEventListener('click', analyze);
-render(PRECOMPUTED);
 initWebR();
 </script>
 </body>

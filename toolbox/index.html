@@ -24,7 +24,9 @@
   .box { background:#fff; border:1px solid #ddd; border-radius:6px; padding:14px; margin:14px 0; }
   canvas { background:#fff; border:1px solid #eee; max-width:100%; }
   .small { font-size:13px; color:#555; }
-  code { background:#f0f0f0; padding:1px 4px; border-radius:3px; }
+  .status { background:#fff3cd; border:1px solid #ffecb5; color:#664d03; border-radius:6px; padding:10px 14px; margin:14px 0; font-size:14px; }
+  .status.ok { background:#d1e7dd; border-color:#badbcc; color:#0f5132; }
+  .plotimg { max-width:100%; height:auto; background:#fff; border:1px solid #eee; border-radius:6px; padding:8px; margin:8px 0; }
 </style>
 </head>
 <body>
@@ -38,9 +40,11 @@
   <a data-tab="about">About</a>
 </nav>
 <main>
+  <div class="status" id="status">Initializing R engine (WebR)…</div>
+
   <section class="panel active" id="tab-info">
     <h1>Welcome to the Toolbox Website!</h1>
-    <div class="box small">Migrated from the former Shiny app at <a href="https://metaanalyses.shinyapps.io/toolbox/" target="_blank">metaanalyses.shinyapps.io/toolbox/</a> → now hosted at <a href="https://lukasroeseler.github.io/shiny/toolbox/" target="_blank">lukasroeseler.github.io/shiny/toolbox/</a>.</div>
+    <div class="box small">Migrated from the former Shiny app at <a href="https://metaanalyses.shinyapps.io/toolbox/" target="_blank">metaanalyses.shinyapps.io/toolbox/</a> → now hosted at <a href="https://lukasroeseler.github.io/shiny/toolbox/" target="_blank">lukasroeseler.github.io/shiny/toolbox/</a>. The p-curve and z-curve analyses are computed <b>live in R</b> in your browser (WebR).</div>
     <h3>What is this toolbox for?</h3>
     <p>A considerable proportion of social science research may not replicate. This website contains a toolbox to determine the trustworthiness of a selected set of findings.</p>
     <h3>How to use it?</h3>
@@ -73,20 +77,18 @@
 
   <section class="panel" id="tab-pcurve">
     <h1>P-Curve</h1>
-    <p>The p-curve analysis (Simonsohn et al., 2014) assesses the p-value distribution. If the null hypothesis is true, p-values will be distributed uniformly; if false, p-values will be right-skewed toward zero. The p-curve below shows the distribution of significant p-values for the <b>example dataset</b> (JCP 2022).</p>
-    <img src="tb_pcurve.png" alt="P-curve of the example dataset" style="max-width:100%;background:#fff;border:1px solid #eee;border-radius:6px;padding:8px">
-    <p class="small">Computed with the R <code>dmetar::pcurve</code> function (k = 138 significant effects). See the original <a href="https://www.p-curve.com/app4/" target="_blank">p-curve app</a> for interactive analyses.</p>
+    <p>The p-curve analysis (Simonsohn et al., 2014) assesses the p-value distribution. If the null hypothesis is true, p-values will be distributed uniformly; if false, p-values will be right-skewed toward zero. The p-curve below is computed live in R from your processed dataset.</p>
+    <img class="plotimg" id="tb_pcurve" alt="P-curve">
+    <div class="box small" id="pcresult">Load a dataset to compute the p-curve.</div>
+    <p class="small">Computed with the R <code>dmetar::pcurve</code> function in your browser (WebR).</p>
   </section>
 
   <section class="panel" id="tab-zcurve">
     <h1>Z-Curve</h1>
-    <p>The z-curve (Bartoš &amp; Schimmack, 2022) uses the z-score distribution's shape for significant effects to estimate the Expected Discovery Rate (EDR), Observed Discovery Rate (ODR), and Expected Replicability Rate (ERR). Below are the results for the <b>example dataset</b> (JCP 2022, n = 150 test statistics).</p>
-    <img src="tb_zcurve.png" alt="Z-curve of the example dataset" style="max-width:100%;background:#fff;border:1px solid #eee;border-radius:6px;padding:8px">
-    <div class="box small">
-      <b>Z-Curve (EM, no bootstrapping) — example dataset</b><br>
-      EDR = 0.127 · ODR = 0.92 · ERR = 0.419
-    </div>
-    <p class="small">Computed with the R <code>zcurve</code> package (method = "EM", bootstrap = 0). For a larger dataset, estimation may take a few seconds to multiple minutes.</p>
+    <p>The z-curve (Bartoš &amp; Schimmack, 2022) uses the z-score distribution's shape for significant effects to estimate the Expected Discovery Rate (EDR), Observed Discovery Rate (ODR), and Expected Replicability Rate (ERR). Below are the results computed live in R from your processed dataset.</p>
+    <img class="plotimg" id="tb_zcurve" alt="Z-curve">
+    <div class="box small" id="zcresult">Load a dataset to compute the z-curve.</div>
+    <p class="small">Computed with the R <code>zcurve</code> package (method = "EM", bootstrap = 0) in your browser (WebR).</p>
   </section>
 
   <section class="panel" id="tab-caliper">
@@ -151,7 +153,6 @@ function parseTestStatistic(s) {
   const val = m ? parseFloat(m[1]) : NaN;
   return { family: fam, value: val };
 }
-
 function effectSize(fam, tv, n) {
   if (isNaN(tv) || !n) return NaN;
   if (fam === 't') return tv / Math.sqrt(tv*tv + n - 2);
@@ -161,7 +162,6 @@ function effectSize(fam, tv, n) {
   if (fam === 'z') return tv / Math.sqrt(tv*tv + n);
   return NaN;
 }
-
 function process(rows) {
   const out = [];
   for (const r of rows) {
@@ -189,18 +189,11 @@ function process(rows) {
   }
   return out;
 }
-
-function loadExample() {
-  const csv = `test.statistic;sample.size;study.label;es.lower.mediation;es.upper.mediation
-t(47)=2.19;48;Daniel M. Grossman,Ryan Rahinel (2022, Study 1);;
-t(126)=2.81;129;Daniel M. Grossman,Ryan Rahinel (2022, Study 2);;
-r(147)=.246;150;Example correlation;;
-F(1,100)=9.1;102;Example F;;
-Z=3.45;200;Example z;;
-chi2(1)=9.1;100;Example chi2;;`;
-  processPaste(csv);
+async function loadExample() {
+  const resp = await fetch('toolbox_data_JCP.csv');
+  const text = await resp.text();
+  processPaste(text);
 }
-
 function loadData() {
   const f = document.getElementById('file').files[0];
   if (f) {
@@ -211,7 +204,6 @@ function loadData() {
     processPaste(document.getElementById('paste').value);
   }
 }
-
 function processPaste(text) {
   const delim = text.indexOf(';') >= 0 ? ';' : ',';
   const lines = text.split(/\r?\n/).filter(l => l.trim());
@@ -228,6 +220,7 @@ function processPaste(text) {
   renderCaliper();
   renderRP();
   document.getElementById('uploadmsg').textContent = 'Processed ' + DATA.length + ' rows.';
+  runToolboxR();
 }
 
 // ---------- render table ----------
@@ -240,23 +233,9 @@ function renderDataTable() {
 }
 
 // ---------- binomial test ----------
-function logGamma(x) { // Lanczos approximation
-  const c=[676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
-  if (x < 0.5) return Math.log(Math.PI) - Math.log(Math.sin(Math.PI*x)) - logGamma(1-x);
-  x -= 1; let a=0.99999999999980993;
-  for (let i=0;i<8;i++) a += c[i]/(x+i+1);
-  const t=x+7.5;
-  return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a);
-}
+function logGamma(x) { const c=[676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7]; if (x < 0.5) return Math.log(Math.PI) - Math.log(Math.sin(Math.PI*x)) - logGamma(1-x); x -= 1; let a=0.99999999999980993; for (let i=0;i<8;i++) a += c[i]/(x+i+1); const t=x+7.5; return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a); }
 function binomPmf(k,n,p){ return Math.exp(logGamma(n+1)-logGamma(k+1)-logGamma(n-k+1) + k*Math.log(p) + (n-k)*Math.log(1-p)); }
-function binomTwoSided(x,n,p){
-  if (n<=0) return NaN;
-  x=Math.round(x);
-  const px = binomPmf(x,n,p);
-  let s=0;
-  for (let i=0;i<=n;i++){ const pi=binomPmf(i,n,p); if (pi <= px*(1+1e-7)) s+=pi; }
-  return Math.min(1,s);
-}
+function binomTwoSided(x,n,p){ if (n<=0) return NaN; x=Math.round(x); const px = binomPmf(x,n,p); let s=0; for (let i=0;i<=n;i++){ const pi=binomPmf(i,n,p); if (pi <= px*(1+1e-7)) s+=pi; } return Math.min(1,s); }
 
 // ---------- caliper ----------
 function caliperParam(){ renderCaliper(); }
@@ -273,72 +252,39 @@ function renderCaliper(){
   if (!DATA) { out.textContent = 'Load a dataset first.'; return; }
   const zs = DATA.map(d=>d.z).filter(z=>z!=null);
   let below=0, above=0, nz=[];
-  for (const z of zs){
-    if (z < crit && z > bwLower) { below++; nz.push({z,cat:0}); }
-    else if (z >= crit && z < bwUpper) { above++; nz.push({z,cat:1}); }
-  }
+  for (const z of zs){ if (z < crit && z > bwLower) { below++; nz.push({z,cat:0}); } else if (z >= crit && z < bwUpper) { above++; nz.push({z,cat:1}); } }
   const p = binomTwoSided(below, below+above, 0.5);
-  out.innerHTML = `<b>Caliper test</b><br>Critical z = ${crit.toFixed(2)}; bandwidth = ${bw.toFixed(2)}<br>`+
-    `Below ${crit.toFixed(2)}: <b>${below}</b> | Above ${crit.toFixed(2)}: <b>${above}</b><br>`+
-    `Binomial test p = ${p.toExponential(2)}`;
+  out.innerHTML = `<b>Caliper test</b><br>Critical z = ${crit.toFixed(2)}; bandwidth = ${bw.toFixed(2)}<br>Below ${crit.toFixed(2)}: <b>${below}</b> | Above ${crit.toFixed(2)}: <b>${above}</b><br>Binomial test p = ${p.toExponential(2)}`;
   drawHistogram(ctx, zs, 'Z values', bwLower, bwUpper, crit);
 }
 
 // ---------- relative proximity ----------
 function rpParam(){ renderRPSig(); renderRPMed(); }
-function rpValue(lo, up){
-  const min = Math.min(Math.abs(lo), Math.abs(up));
-  let rp = min/(up-lo);
-  const sign = (lo>0 || up<0);
-  if (!sign) rp = -rp;
-  return rp;
-}
-function computeRPSig(){
-  if (!DATA) return [];
-  return DATA.filter(d=>d.es!=null && d.se!=null).map(d=>{
-    const esLower = Math.abs(d.es) - 1.96*d.se;
-    const esUpper = Math.abs(d.es) + 1.96*d.se;
-    return rpValue(esLower, esUpper);
-  });
-}
-function computeRPMed(){
-  if (!DATA) return [];
-  return DATA.filter(d=>d.medLow!=null && d.medUp!=null && String(d.medLow).toLowerCase()!=='na' && String(d.medUp).toLowerCase()!=='na' && d.medLow!=='' && d.medUp!=='').map(d=>{
-    return rpValue(Number(d.medLow), Number(d.medUp));
-  });
-}
+function rpValue(lo, up){ const min = Math.min(Math.abs(lo), Math.abs(up)); let rp = min/(up-lo); const sign = (lo>0 || up<0); if (!sign) rp = -rp; return rp; }
+function computeRPSig(){ if (!DATA) return []; return DATA.filter(d=>d.es!=null && d.se!=null).map(d=>{ const esLower = Math.abs(d.es) - 1.96*d.se; const esUpper = Math.abs(d.es) + 1.96*d.se; return rpValue(esLower, esUpper); }); }
+function computeRPMed(){ if (!DATA) return []; return DATA.filter(d=>d.medLow!=null && d.medUp!=null && String(d.medLow).toLowerCase()!=='na' && String(d.medUp).toLowerCase()!=='na' && d.medLow!=='' && d.medUp!=='').map(d=> rpValue(Number(d.medLow), Number(d.medUp))); }
 function renderRPSig(){
   const bw = parseFloat(document.getElementById('bwrp').value);
   document.getElementById('bwrpv').textContent = bw.toFixed(2);
-  const out = document.getElementById('rp_result');
-  const canvas = document.getElementById('rp_canvas');
-  const ctx = canvas.getContext('2d');
+  const out = document.getElementById('rp_result'); const canvas = document.getElementById('rp_canvas'); const ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,canvas.width,canvas.height);
   if (!DATA) { out.textContent = 'Load a dataset first.'; return; }
-  const rps = computeRPSig();
-  let neg=0, pos=0;
+  const rps = computeRPSig(); let neg=0, pos=0;
   for (const rp of rps){ if (rp<0 && rp>-bw) neg++; else if (rp>=0 && rp<bw) pos++; }
   const p = binomTwoSided(neg, neg+pos, 0.5);
-  out.innerHTML = `<b>Relative proximity — significance tests (bandwidth ${bw.toFixed(2)})</b><br>`+
-    `Negative (below 0): <b>${neg}</b> | Positive (above 0): <b>${pos}</b><br>`+
-    `Binomial test p = ${p.toExponential(2)}`;
+  out.innerHTML = `<b>Relative proximity — significance tests (bandwidth ${bw.toFixed(2)})</b><br>Negative (below 0): <b>${neg}</b> | Positive (above 0): <b>${pos}</b><br>Binomial test p = ${p.toExponential(2)}`;
   drawHistogram(ctx, rps, 'Relative Proximity', -bw, bw, 0);
 }
 function renderRPMed(){
   const bw = parseFloat(document.getElementById('bwrpmed').value);
   document.getElementById('bwrpmedv').textContent = bw.toFixed(2);
-  const out = document.getElementById('rpmed_result');
-  const canvas = document.getElementById('rpmed_canvas');
-  const ctx = canvas.getContext('2d');
+  const out = document.getElementById('rpmed_result'); const canvas = document.getElementById('rpmed_canvas'); const ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,canvas.width,canvas.height);
   if (!DATA) { out.textContent = 'Load a dataset first.'; return; }
-  const rps = computeRPMed();
-  let neg=0, pos=0;
+  const rps = computeRPMed(); let neg=0, pos=0;
   for (const rp of rps){ if (rp<0 && rp>-bw) neg++; else if (rp>=0 && rp<bw) pos++; }
   const p = binomTwoSided(neg, neg+pos, 0.5);
-  out.innerHTML = `<b>Relative proximity — mediation CIs (bandwidth ${bw.toFixed(2)})</b><br>`+
-    `Negative (below 0): <b>${neg}</b> | Positive (above 0): <b>${pos}</b><br>`+
-    `Binomial test p = ${p.toExponential(2)}`;
+  out.innerHTML = `<b>Relative proximity — mediation CIs (bandwidth ${bw.toFixed(2)})</b><br>Negative (below 0): <b>${neg}</b> | Positive (above 0): <b>${pos}</b><br>Binomial test p = ${p.toExponential(2)}`;
   drawHistogram(ctx, rps, 'Relative Proximity', -bw, bw, 0);
 }
 function renderRP(){ renderRPSig(); renderRPMed(); }
@@ -353,40 +299,75 @@ function drawHistogram(ctx, values, xlabel, v1, v2, v0){
   for (const v of values){ let b=Math.floor((v-lo)/binW); if(b<0)b=0; if(b>=bins)b=bins-1; counts[b]++; }
   const maxC=Math.max(...counts);
   ctx.strokeStyle='#333'; ctx.fillStyle='#0dcfe0';
-  for (let i=0;i<bins;i++){
-    const x=pad+i*(w/bins), bh=(counts[i]/maxC)*h;
-    ctx.fillRect(x, pad+h-bh, w/bins-1, bh);
-  }
+  for (let i=0;i<bins;i++){ const x=pad+i*(w/bins), bh=(counts[i]/maxC)*h; ctx.fillRect(x, pad+h-bh, w/bins-1, bh); }
   ctx.strokeStyle='#000';
   function line(v){ const x=pad+((v-lo)/(hi-lo))*w; ctx.beginPath(); ctx.moveTo(x,pad); ctx.lineTo(x,pad+h); ctx.stroke(); }
   ctx.setLineDash([4,4]); if(v1!=null)line(v1); if(v2!=null)line(v2); ctx.setLineDash([]);
   ctx.strokeStyle='red'; if(v0!=null)line(v0);
   ctx.fillStyle='#333'; ctx.font='12px sans-serif';
-  ctx.fillText(xlabel, pad, canvas_h(ctx));
-  ctx.fillText(lo.toFixed(2), pad, canvas_h(ctx)-6);
-  ctx.fillText(hi.toFixed(2), pad+w-40, canvas_h(ctx)-6);
+  ctx.fillText(xlabel, pad, ctx.canvas.height-10);
+  ctx.fillText(lo.toFixed(2), pad, ctx.canvas.height-16);
+  ctx.fillText(hi.toFixed(2), pad+w-40, ctx.canvas.height-16);
 }
-function canvas_h(ctx){ return ctx.canvas.height-10; }
-
-// qnorm via inverse normal CDF (Acklam)
 function qnorm(p){
   const a=[-3.969683028665376e+01,2.209460984245205e+02,-2.759285104469687e+02,1.383577518672690e+02,-3.066479806614716e+01,2.506628277459239e+00];
   const b=[-5.447609879822406e+01,1.615858368580409e+02,-1.556989798598866e+02,6.680131188771972e+01,-1.328068155288572e+01];
   const c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,-2.549732539343734e+00,4.374664141464968e+00,2.938163982698783e+00];
   const d=[7.784695709041462e-03,3.224671290700398e-01,2.445134137142996e+00,3.754408661907416e+00];
   let q, x;
-  if (p<0.02425){
-    q=Math.sqrt(-2*Math.log(p));
-    x=(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/(((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1));
-  } else if (p>0.97575){
-    q=Math.sqrt(-2*Math.log(1-p));
-    x=-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/(((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1));
-  } else {
-    q=p-0.5; const r=q*q;
-    x=(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
-  }
+  if (p<0.02425){ q=Math.sqrt(-2*Math.log(p)); x=(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/(((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)); }
+  else if (p>0.97575){ q=Math.sqrt(-2*Math.log(1-p)); x=-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/(((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)); }
+  else { q=p-0.5; const r=q*q; x=(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1); }
   return x;
 }
+</script>
+
+<script type="module">
+import { WebR } from "https://webr.r-wasm.org/latest/webr.mjs";
+const PKGS = ['zcurve','meta','poibin','stringr','jsonlite','ggplot2','dplyr'];
+let webR=null, ready=false;
+function setStatus(text, ok){ const el=document.getElementById('status'); el.textContent=text; el.className='status'+(ok?' ok':''); }
+async function initWebR(){
+  try {
+    setStatus('Initializing R engine (WebR)…');
+    webR = new WebR();
+    await webR.init();
+    setStatus('Installing R packages (first load can take a minute)…');
+    await webR.installPackages(PKGS);
+    setStatus('Loading packages…');
+    await webR.evalRVoid(`library(zcurve);library(meta);library(poibin);library(stringr);library(jsonlite);library(ggplot2);library(dplyr)`);
+    for (const f of ['pcurve2.R','SE_from_p.R','tb_run_analysis.R']){
+      const txt = await (await fetch(f)).text();
+      webR.FS.writeFile(f, new TextEncoder().encode(txt));
+    }
+    await webR.evalRVoid(`source('pcurve2.R'); source('SE_from_p.R'); source('tb_run_analysis.R')`);
+    ready = true;
+    setStatus('R engine ready. Upload or load a dataset.', true);
+  } catch (e) { setStatus('R engine failed to start: ' + e.message); }
+}
+function setImg(id, bytes){ const img=document.getElementById(id); if(img) img.src=URL.createObjectURL(new Blob([bytes],{type:'image/png'})); }
+async function runToolboxR(){
+  if (!ready){ setStatus('R engine still loading, please wait…'); return; }
+  if (!DATA || !DATA.length){ setStatus('No data to process.'); return; }
+  // build normalized CSV (test.statistic;sample.size;study.label)
+  const rows = DATA.map(d => `${d.test};${d.n==null?'':d.n};${(d.label||'').replace(/;/g,',')}`);
+  const csv = 'test.statistic;sample.size;study.label\n' + rows.join('\n');
+  webR.FS.writeFile('toolbox_data.csv', new TextEncoder().encode(csv));
+  setStatus('Computing p-curve and z-curve in R (WebR)… this may take a moment.');
+  try {
+    await webR.evalRVoid(`suppressWarnings(suppressMessages(tb_run(data_path='toolbox_data.csv', outdir='.'))); TRUE`);
+    const res = JSON.parse(new TextDecoder().decode(await webR.FS.readFile('tb_results.json')));
+    const pc = document.getElementById('pcresult');
+    pc.innerHTML = `<b>P-Curve</b><br>Estimated true effect (d) = ${res.pcurve_d==null?'—':res.pcurve_d.toFixed(3)}<br>k = ${res.pcurve_k} significant effects`;
+    const zc = document.getElementById('zcresult');
+    zc.innerHTML = `<b>Z-Curve (EM, no bootstrapping)</b><br>EDR = ${res.zc_coef.EDR==null?'—':res.zc_coef.EDR.toFixed(3)} · ODR = ${res.zc_nsig}/${res.zc_n} · ERR = ${res.zc_coef.ERR==null?'—':res.zc_coef.ERR.toFixed(3)}`;
+    try { setImg('tb_pcurve', await webR.FS.readFile('tb_pcurve.png')); } catch(e){}
+    try { setImg('tb_zcurve', await webR.FS.readFile('tb_zcurve.png')); } catch(e){}
+    setStatus('Computed live in R (k = ' + res.k + ').', true);
+  } catch (e) { setStatus('R computation failed: ' + e.message); }
+}
+window.runToolboxR = runToolboxR;
+initWebR();
 </script>
 </body>
 </html>
