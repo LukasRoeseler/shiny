@@ -6,10 +6,11 @@ Static HTML versions of Lukas Röseler's interactive R Shiny apps, hosted on Git
 
 | App | Old (shinyapps.io) | New (GitHub Pages) |
 |-----|--------------------|--------------------|
-| OpAQ — Open Anchoring Quest | <https://metaanalyses.shinyapps.io/OpAQ/> | <https://lukasroeseler.github.io/shiny/opaq/> |
 | Toolbox — Trustworthiness of Published Findings | <https://metaanalyses.shinyapps.io/toolbox/> | <https://lukasroeseler.github.io/shiny/toolbox/> |
 | Dynamic Meta-Analysis of Body Positions | <https://metaanalyses.shinyapps.io/bodypositions/> | <https://lukasroeseler.github.io/shiny/bodypositions/> |
 | Studienfeedback (RHO-Daten) — *not converted* | <https://l-air.shinyapps.io/feedback/> | — (archived, see note) |
+
+> **Note:** The **Open Anchoring Quest (OpAQ)** app has moved to its own repository and site: <https://lukasroeseler.github.io/opaq/> (repo `LukasRoeseler/opaq`).
 
 ## Notes about function
 
@@ -17,7 +18,6 @@ Each app below is a static reimplementation of the original interactive Shiny ap
 
 | App | Function (what it does) | Migration notes |
 |-----|-------------------------|-----------------|
-| **OpAQ** | Interactive meta-analysis of anchoring effects: dataset overview, effect-size distribution, moderators (e.g., DV type, design, culture), reliabilities, anchor-extremeness, and file-drawer analyses. | Full static dashboard preserved (data precomputed into `data/*.json`). Original analysis logic and figures intact. |
 | **Toolbox** | Determines the trustworthiness of a set of published findings. Upload a dataset of test statistics and it computes effect sizes/z-values and runs a **p-curve**, **z-curve**, **caliper test**, and **relative proximity** (significance tests + mediation CIs) analysis. | Effect-size conversion, z-values, caliper test and relative proximity run in client-side JS (verified against R). **p-curve and z-curve are documented only** — they require the R backend and are not reimplemented in JS. |
 | **Body Positions** | Dynamic meta-analysis of experimentally induced body position effects on **behavior**, **self-report**, and **physiology** outcomes, with forest/funnel plots, p-curve, z-curve, and Egger's test. | Interactive app: filter studies (DV type, preregistration) and the meta-analysis is computed **live in R** via **WebR** (DerSimonian–Laird random-effects model) in the browser. Precomputed results shown instantly as fallback. |
 | **Studienfeedback** | German-language participant feedback app ("RHO-Daten: Ihr Studienfeedback"). Participants enter a personal code to view their individual results vs. other participants (thinking styles/narcissism, and opinion formation on YouTube). | **Not converted** to static HTML (per migration request). Source code was not located in public repos/OSF; archived in the parent `shinymigration/feedback` folder. |
@@ -27,7 +27,6 @@ Each app below is a static reimplementation of the original interactive Shiny ap
 This repository root is published with GitHub Pages (deploy from the `main` branch, root `/` directory). Each app lives in its own subdirectory so it gets its own URL:
 
 - `https://lukasroeseler.github.io/shiny/`
-- `https://lukasroeseler.github.io/shiny/opaq/`
 - `https://lukasroeseler.github.io/shiny/toolbox/`
 - `https://lukasroeseler.github.io/shiny/bodypositions/`
 
