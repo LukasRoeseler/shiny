@@ -1,0 +1,180 @@
+ID;test.statistic;sample.size;study.label;es.lower.mediation;es.upper.mediation
+1;t(47)=2.19;48;Daniel M. Grossman,Ryan Rahinel (2022, Study 1);NA;NA
+2;t(126)=2.81;129;Daniel M. Grossman,Ryan Rahinel (2022, Study 2);NA;NA
+3;t(58)=-2.27;60;Daniel M. Grossman,Ryan Rahinel (2022, Study 3);NA;NA
+4;t(118)=-2.19;120;Daniel M. Grossman,Ryan Rahinel (2022, Study Replication study 3 from supplementary material);NA;NA
+5;NA;211;Daniel M. Grossman,Ryan Rahinel (2022, Study 4);0.1071;1.0041
+6;t(138)=-2.15;141;Yann Cornil, Hilke Plassmann, Judith Aron-Wisnewsky, Christine Poitou-Bernert, Karine Clément, Michèle Chabert, Pierre Chandon (2022, Study 1);NA;NA
+7;F(1,258)=5.67;262;Hanyong Park, JaeHwan Kwon (2022, Study 1);NA;NA
+8;NA;233;Hanyong Park, JaeHwan Kwon (2022, Study 2);0.15;0.71
+9;F(2,852)=2.43;864;Hanyong Park, JaeHwan Kwon (2022, Study 3);NA;NA
+10;F(1,278)=5.34;282;Hanyong Park, JaeHwan Kwon (2022, Study 4);NA;NA
+11;t(384)=2.23;386;Minju Han, George E. Newman (2022, Study 1);NA;NA
+12;NS;397;Minju Han, George E. Newman (2022, Study 2);NA;NA
+13;NA;531;Minju Han, George E. Newman (2022, Study 3);0.0059;0.81
+14;t(365)=2.44;369;Minju Han, George E. Newman (2022, Study Additional study from supplementary material (see Appendix E));NA;NA
+15;F(1,107)=5.16;111;Luke Nowlan, Benjamin Borenstein, Carter Morgan, Minzhe Xu, Chris Janiszewski (2022, Study 1A);NA;NA
+16;F(1,124)=4.60;128;Luke Nowlan, Benjamin Borenstein, Carter Morgan, Minzhe Xu, Chris Janiszewski (2022, Study 1B);NA;NA
+17;F(1,262)=0.45;266;Luke Nowlan, Benjamin Borenstein, Carter Morgan, Minzhe Xu, Chris Janiszewski (2022, Study 2);NA;NA
+18;F(1,262)=12.90;266;Luke Nowlan, Benjamin Borenstein, Carter Morgan, Minzhe Xu, Chris Janiszewski (2022, Study 2);NA;NA
+19;F(1,196)=4.18;200;Luke Nowlan, Benjamin Borenstein, Carter Morgan, Minzhe Xu, Chris Janiszewski (2022, Study 3);NA;NA
+20;z=1.61;814;Luke Nowlan, Benjamin Borenstein, Carter Morgan, Minzhe Xu, Chris Janiszewski (2022, Study 4);NA;NA
+21;z=2.97;318;Luke Nowlan, Benjamin Borenstein, Carter Morgan, Minzhe Xu, Chris Janiszewski (2022, Study 5);NA;NA
+22;t(378)=3.60;385;Sarah C. Whitley,Ximena Garcia-Rada,Fleura Bardhi,Dan Ariely,Carey K. Morewedge (2022, Study 2);NA;NA
+23;t(389)=5.84;391;Sarah C. Whitley,Ximena Garcia-Rada,Fleura Bardhi,Dan Ariely,Carey K. Morewedge (2022, Study 3A );NA;NA
+24;t(385)=6.18;387;Sarah C. Whitley,Ximena Garcia-Rada,Fleura Bardhi,Dan Ariely,Carey K. Morewedge (2022, Study 3B);NA;NA
+25;t(126)=10.07;1128;Sarah C. Whitley,Ximena Garcia-Rada,Fleura Bardhi,Dan Ariely,Carey K. Morewedge (2022, Study 3C);NA;NA
+26;chi2(1)=7.32;106;Yunqing Chen,Leilei Gao (2022, Study 1a);NA;NA
+27;F(1,123)=4.20;125;Yunqing Chen,Leilei Gao (2022, Study 1b);NA;NA
+28;NA;207;Yunqing Chen,Leilei Gao (2022, Study 2);1.59;7.82
+29;F(2,150)=3.50;153;Yunqing Chen,Leilei Gao (2022, Study 3);NA;NA
+30;F(2,598)=3.13;604;Yunqing Chen,Leilei Gao (2022, Study 4);NA;NA
+31;F(1,398)=6.31;402;Yunqing Chen,Leilei Gao (2022, Study 5);NA;NA
+32;t(846)=-6.72;848;Yunqing Chen,Leilei Gao (2022, Study Field Study);NA;NA
+33;chi2(1)=4.57;119;Tom Joonhwan Kim,Joydeep Srivastava (2022, Study 1);NA;NA
+34;F(1,400)=4.31;404;Tom Joonhwan Kim,Joydeep Srivastava (2022, Study 2);NA;NA
+35;F(1,400)=10.11;404;Tom Joonhwan Kim,Joydeep Srivastava (2022, Study 2);NA;NA
+36;F(1,250)=4.38;254;Tom Joonhwan Kim,Joydeep Srivastava (2022, Study 3);NA;NA
+37;F(1,303)=9.56;307;Tom Joonhwan Kim,Joydeep Srivastava (2022, Study 4);NA;NA
+38;F(1,303)=5.18;307;Tom Joonhwan Kim,Joydeep Srivastava (2022, Study 4);NA;NA
+39;F(1,294)=4.69;302;Tom Joonhwan Kim,Joydeep Srivastava (2022, Study 5);NA;NA
+40;F(1,291)=4.44;299;Tom Joonhwan Kim,Joydeep Srivastava (2022, Study 6);NA;NA
+41;F(1,69)=13.53;71;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study 1A);NA;NA
+42;F(1,354)=15.94;356;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study 1B);NA;NA
+43;F(1,172)=5.08;174;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study 2);NA;NA
+44;chi2(2)=3.98;95;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study 2, post-test);NA;NA
+45;t(265)=2.64;269;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study 3);NA;NA
+46;F(1,160)=3.90;164;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study 4);NA;NA
+47;F(1,99)=5.00;101;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study 5);NA;NA
+48;F(1,340)=11.33;342;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study 6);NA;NA
+49;F(1,340)=3.13;342;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study 6);NA;NA
+50;F(1,92)=45.84;94;Noah VanBergen,Nicholas H. Lurie,Zoey Chen (2022, Study Additional Study (in Appendix));NA;NA
+51;t(145)=2.35;147;Alican Mecit, L. J. Shrum, Tina M. Lowrey (2022, Study 1a);NA;NA
+52;t(149)=2.34;151;Alican Mecit, L. J. Shrum, Tina M. Lowrey (2022, Study 1b);NA;NA
+53;t(148)=2.18;150;Alican Mecit, L. J. Shrum, Tina M. Lowrey (2022, Study 1c);NA;NA
+54;F(1,198)=94.67;200;Alican Mecit, L. J. Shrum, Tina M. Lowrey (2022, Study 2);NA;NA
+55;NA;302;Alican Mecit, L. J. Shrum, Tina M. Lowrey (2022, Study 3);NA;NA
+56;F(1,387)=6.05;391;Alican Mecit, L. J. Shrum, Tina M. Lowrey (2022, Study 4);NA;NA
+57;t(133)=10.98;199;Yi Li, Nico Heuvinck, Mario Pandelaere (2022, Study 1);NA;NA
+58;chi2(1)=20.51;177;Yi Li, Nico Heuvinck, Mario Pandelaere (2022, Study 2);NA;NA
+59;t(298)=3.07;300;Yi Li, Nico Heuvinck, Mario Pandelaere (2022, Study 3);NA;NA
+60;F(1,291)=15.57;294;Yi Li, Nico Heuvinck, Mario Pandelaere (2022, Study Appendix S3: Replication Study 3);NA;NA
+61;NA;274;Yi Li, Nico Heuvinck, Mario Pandelaere (2022, Study 4);-0.22;-0.04
+62;t(49)=-3.01;50;Yi Li, Nico Heuvinck, Mario Pandelaere (2022, Study 5);NA;NA
+63;chi2(1)=13.52;50;Yi Li, Nico Heuvinck, Mario Pandelaere (2022, Study Appendix S5: Replication Study 5);NA;NA
+64;chi2(1)=25.41;292;Yi Li, Nico Heuvinck, Mario Pandelaere (2022, Study 6);NA;NA
+65;NS;721;Ethan Pancer, Matthew Philp, Maxwell Poole, Theodore J. Noseworthy (2022, Study 1);NA;NA
+66;NA;229;Ethan Pancer, Matthew Philp, Maxwell Poole, Theodore J. Noseworthy (2022, Study 2);0.02;0.472
+67;F(1,242)=4.20;246;Ethan Pancer, Matthew Philp, Maxwell Poole, Theodore J. Noseworthy (2022, Study 3);NA;NA
+68;t(169)=2.27;173;Ashley S. Otto, Joshua J. Clarkson, Nathanael S. Martin (2022, Study 1);NA;NA
+69;F(2,284)=64.25;287;Danielle J. Brick Lingrui Zhou, Tanya L. Chartrand, andGavan J. Fitzsimons (2022, Study 1.A);NA;NA
+70;F(2,535)=17.66;541;Danielle J. Brick Lingrui Zhou, Tanya L. Chartrand, andGavan J. Fitzsimons (2022, Study 1.B);NA;NA
+71;NA;118;Danielle J. Brick Lingrui Zhou, Tanya L. Chartrand, andGavan J. Fitzsimons (2022, Study 2);0.009;0.089
+72;NA;126;Danielle J. Brick Lingrui Zhou, Tanya L. Chartrand, andGavan J. Fitzsimons (2022, Study 3);0.019;0.143
+73;NA;571;Danielle J. Brick Lingrui Zhou, Tanya L. Chartrand, andGavan J. Fitzsimons (2022, Study 4);-0.281;-0.002
+74;t(100)=6.55;101;Berkeley J. Dietvorst,Daniel M. Bartels (2022, Study 1);NA;NA
+75;r(705)=0.42;706;Berkeley J. Dietvorst,Daniel M. Bartels (2022, Study 2);NA;NA
+76;t(201)=-2.98;201;Berkeley J. Dietvorst,Daniel M. Bartels (2022, Study 3A);NA;NA
+77;t(410)=-4.54;405;Berkeley J. Dietvorst,Daniel M. Bartels (2022, Study 3B);NA;NA
+78;t(496)=-3.44;1605;Berkeley J. Dietvorst,Daniel M. Bartels (2022, Study 4);NA;NA
+79;t(709)=-2.09;811;Berkeley J. Dietvorst,Daniel M. Bartels (2022, Study Supplementary Study 1);NA;NA
+80;t(171)=-2.64;180;Bora Min,Norbert Schwarz (2022, Study 1A);NA;NA
+81;F(1,275)=3.92;279;Bora Min,Norbert Schwarz (2022, Study 1B);NA;NA
+82;F(1,275)=7.21;279;Bora Min,Norbert Schwarz (2022, Study 1B);NA;NA
+83;F(1,274)=9.2;278;Bora Min,Norbert Schwarz (2022, Study 1C);NA;NA
+84;F(1,274)=5.86;278;Bora Min,Norbert Schwarz (2022, Study 1C);NA;NA
+85;F(1,356)=8.92;360;Bora Min,Norbert Schwarz (2022, Study 2);NA;NA
+86;F(1,356)=4.72;360;Bora Min,Norbert Schwarz (2022, Study 2);NA;NA
+87;NA;249;Bora Min,Norbert Schwarz (2022, Study 3);0.085;0.517
+88;t(197)=2.05;200;Bora Min,Norbert Schwarz (2022, Study Supplementary study 4A);NA;NA
+89;F(2,655)=1.59;667;Bora Min,Norbert Schwarz (2022, Study Supplementary study 4B);NA;NA
+90;t(103)=7.47;104;Julian Givi,Jeff Galak (2022, Study Pilot study);NA;NA
+91;F(1,401)=9.54;405;Julian Givi,Jeff Galak (2022, Study 1);NA;NA
+92;F(1,571)=7.70;575;Julian Givi,Jeff Galak (2022, Study 2);NA;NA
+93;F(1,388)=3.12;392;Julian Givi,Jeff Galak (2022, Study 3);NA;NA
+94;F(1,361)=21.28;365;Julian Givi,Jeff Galak (2022, Study 4);NA;NA
+95;F(1,595)=12.87;599;Julian Givi,Jeff Galak (2022, Study Supplementary study A1);NA;NA
+96;F(1,100)=5.51;102;Anne Hamby, Brent McFerran, Darren W. Dahl (2022, Study 1);NA;NA
+97;F(1,193)=3.85;196;Anne Hamby, Brent McFerran, Darren W. Dahl (2022, Study 2);NA;NA
+98;F(4,649)=4.23;656;Anne Hamby, Brent McFerran, Darren W. Dahl (2022, Study 3);NA;NA
+99;F(1,297)=5.78;300;Anne Hamby, Brent McFerran, Darren W. Dahl (2022, Study Supplementary Study);NA;NA
+100;t(506)=2.08;510;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study Pilot study);NA;NA
+101;t(506)=-2.29;510;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study Pilot study);NA;NA
+102;t(448)=7.36;451;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study 1);NA;NA
+103;NA;267;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study 2);1.04;4.2
+104;t(395)=2.88;399;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study 3);NA;NA
+105;t(395)=-1.89;399;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study 3);NA;NA
+106;t(108)=5.06;221;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study Supplemental Study A);NA;NA
+107;t(109)=10.14;221;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study Supplemental Study A);NA;NA
+108;t(307)=10.77;310;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study Supplemental Study B);NA;NA
+109;t(307)=7.34;310;Gabriela N. Tonietto, Eric M. VanEpps, Selin A. Malkoc, Sam J. Maglio (2022, Study Supplemental Study B);NA;NA
+110;F(2,296)=3.67;302;Liangyan Wang, Eugene Y. Chan, Haipeng (Allan) Chen, Han Lin, Xinzhan Shi (2022, Study 1);NA;NA
+111;F(2,296)=8.45;302;Liangyan Wang, Eugene Y. Chan, Haipeng (Allan) Chen, Han Lin, Xinzhan Shi (2022, Study 1);NA;NA
+112;F(2,175)=6.59;548;Liangyan Wang, Eugene Y. Chan, Haipeng (Allan) Chen, Han Lin, Xinzhan Shi (2022, Study 2);NA;NA
+113;F(2,175)=17.05;548;Liangyan Wang, Eugene Y. Chan, Haipeng (Allan) Chen, Han Lin, Xinzhan Shi (2022, Study 2);NA;NA
+114;F(1,256)=8.84;259;Sören Köcher, Keith Wilcox (2022, Study 1);NA;NA
+115;F(1,231)=4.15;235;Sören Köcher, Keith Wilcox (2022, Study 2);NA;NA
+116;F(1,92)=2.92;94;Sören Köcher, Keith Wilcox (2022, Study 3);NA;NA
+117;F(1,249)=6.23;259;Sören Köcher, Keith Wilcox (2022, Study Supplementary Study);NA;NA
+118;NS;163;Joris Demmers, Andrea N. Weihrauch, Frauke H. Mattison Thompson (2022, Study 1);NA;NA
+119;F(1,107)=4.44;111;Joris Demmers, Andrea N. Weihrauch, Frauke H. Mattison Thompson (2022, Study 2);NA;NA
+120;chi2(1)=5.20;404;Joris Demmers, Andrea N. Weihrauch, Frauke H. Mattison Thompson (2022, Study 3);NA;NA
+121;chi2(1)=6.12;304;Joris Demmers, Andrea N. Weihrauch, Frauke H. Mattison Thompson (2022, Study 4);NA;NA
+122;chi2(1)=4.45;137;Yanfen You, Jingjing Pan, Xiaojing Yang, Xianzheng Fei (2022, Study 1);NA;NA
+123;NA;178;Yanfen You, Jingjing Pan, Xiaojing Yang, Xianzheng Fei (2022, Study 2);-0.3;-0.01
+124;F(1,203)=6.45;218;Yanfen You, Jingjing Pan, Xiaojing Yang, Xianzheng Fei (2022, Study 3);NA;NA
+125;chi2(1)=5.13;119;Yanfen You, Jingjing Pan, Xiaojing Yang, Xianzheng Fei (2022, Study 4);NA;NA
+126;chi2(1)=4.0;157;Yanfen You, Jingjing Pan, Xiaojing Yang, Xianzheng Fei (2022, Study Supplementary Study 1);NA;NA
+127;F(1,119)=4.80;121;Yanfen You, Jingjing Pan, Xiaojing Yang, Xianzheng Fei (2022, Study Supplementary Study 2);NA;NA
+128;F(1,392)=2.88;396;Yanfen You, Jingjing Pan, Xiaojing Yang, Xianzheng Fei (2022, Study Supplementary Study 3);NA;NA
+129;t(207)=2.67;211;Thomas Allard, Brent McFerran (2022, Study 1);NA;NA
+130;t(227)=3.21;231;Thomas Allard, Brent McFerran (2022, Study 2A);NA;NA
+131;t(230)=2.91;234;Thomas Allard, Brent McFerran (2022, Study 2B);NA;NA
+132;t(425)=2.28;433;Thomas Allard, Brent McFerran (2022, Study 3);NA;NA
+133;NA;396;Thomas Allard, Brent McFerran (2022, Study 4);0.01;0.05
+134;t(494)=2.45;502;Thomas Allard, Brent McFerran (2022, Study 5);NA;NA
+135;NA;186;Thomas Allard, Brent McFerran (2022, Study 6);NA;NA
+136;F(1,105)=7.51;107;Sara Williamson, Lama Lteif, Ana Valenzuela (2022, Study 1);NA;NA
+137;F(2,123)=9.31;126;Sara Williamson, Lama Lteif, Ana Valenzuela (2022, Study 2);NA;NA
+138;NA;199;Sara Williamson, Lama Lteif, Ana Valenzuela (2022, Study 3);0.09;1.54
+139;NA;374;Sara Williamson, Lama Lteif, Ana Valenzuela (2022, Study 4);0.55;2.29
+140;F(1,109)=175.97;111;Sara Williamson, Lama Lteif, Ana Valenzuela (2022, Study Supplementary Additional Study);NA;NA
+141;chi2(1)=6.94;216;Adelle X. Yang, Minjung Koo, Jaewon Hwang (2022, Study 1A);NA;NA
+142;chi2(1)=7.47;276;Adelle X. Yang, Minjung Koo, Jaewon Hwang (2022, Study 1B);NA;NA
+143;NA;356;Adelle X. Yang, Minjung Koo, Jaewon Hwang (2022, Study 2);0.01;0.24
+144;F(1,179)=8.80;183;Adelle X. Yang, Minjung Koo, Jaewon Hwang (2022, Study 3);NA;NA
+145;NS;621;Adelle X. Yang, Minjung Koo, Jaewon Hwang (2022, Study 4);NA;NA
+146;NS;698;Adelle X. Yang, Minjung Koo, Jaewon Hwang (2022, Study 5);NA;NA
+147;chi2(1)=6.37;486;Adelle X. Yang, Minjung Koo, Jaewon Hwang (2022, Study Supplementary Study S1);NA;NA
+148;F(1,102)=6.51;104;Yuri Seo, Felix Septianto, Eunju Ko (2022, Study 1);NA;NA
+149;F(2,118)=4.63;121;Yuri Seo, Felix Septianto, Eunju Ko (2022, Study 2);NA;NA
+150;F(1,322)=4.82;326;Yuri Seo, Felix Septianto, Eunju Ko (2022, Study 3);NA;NA
+151;chi2(1)=10.6;260;Yuri Seo, Felix Septianto, Eunju Ko (2022, Study 4);NA;NA
+152;F(2,177)=4.36;180;Yuri Seo, Felix Septianto, Eunju Ko (2022, Study Supplementary: Study 2: Follow-Up Experiment);NA;NA
+153;F(1,317)=4.06;321;Yuri Seo, Felix Septianto, Eunju Ko (2022, Study Supplementary: Study 3: Follow-Up Experiment);NA;NA
+154;chi2(1)=4.16;239;Daniel M. Zane, Rebecca Walker Reczek, Kelly L. Haws (2022, Study 1);NA;NA
+155;F(1,277)=9.45;281;Daniel M. Zane, Rebecca Walker Reczek, Kelly L. Haws (2022, Study 2);NA;NA
+156;F(1,358)=4.18;362;Daniel M. Zane, Rebecca Walker Reczek, Kelly L. Haws (2022, Study 3);NA;NA
+157;F(1,298)=4.27;300;Daniel M. Zane, Rebecca Walker Reczek, Kelly L. Haws (2022, Study Supplementary study);NA;NA
+158;t(570)=-2.70;576;Elaine Chan (2022, Study 1);NA;NA
+159;t(570)=-2.48;576;Elaine Chan (2022, Study 1);NA;NA
+160;NS;188;Elaine Chan (2022, Study 2);NA;NA
+161;F(1,204)=4.32;208;Elaine Chan (2022, Study 3);NA;NA
+162;F(1,204)=4.49;208;Elaine Chan (2022, Study 3);NA;NA
+163;chi2(1)=4.29;193;Elaine Chan (2022, Study Supplementary: Study 1 follow up);NA;NA
+164;chi2(1)=12.23;596;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study 1);NA;NA
+165;NA;501;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study 2);0.43;1.05
+166;chi2(1)=13.17;1008;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study 3);NA;NA
+167;t(144)=9.34;145;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study Supplementary Study A1);NA;NA
+168;NS;802;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study Supplementary Study A2);NA;NA
+169;chi2(1)=7.61;514;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study Supplementary Study A3);NA;NA
+170;F(2,399)=63.22;402;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study Supplementary Study A4);NA;NA
+171;chi2(1)=7.03;803;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study Supplementary Study A5);NA;NA
+172;F(1,99)=7.35;100;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study Supplementary Study A5: pretest);NA;NA
+173;t(403)=4.13;404;Eugina Leung, Maria Cristina Cito, Gabriele Paolacci, Stefano Puntoni (2022, Study Supplementary Study A6);NA;NA
+174;NA;505;Chelsea Galoni, Brendan Strejcek, Kent Grayson (2022, Study 1);0.06;0.15
+175;NA;396;Chelsea Galoni, Brendan Strejcek, Kent Grayson (2022, Study 2);0.28;0.68
+176;NA;280;Chelsea Galoni, Brendan Strejcek, Kent Grayson (2022, Study 3);0.06;0.74
+177;F(1,186)=25.33;190;Taku Togawa, Yoko Sugitani (2022, Study 1);NA;NA
+178;F(1,194)=3.94;196;Taku Togawa, Yoko Sugitani (2022, Study 2);NA;NA
+179;F(1,191)=6.56;195;Taku Togawa, Yoko Sugitani (2022, Study 3);NA;NA

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lukas Röseler — Shiny Apps (Static)</title>
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Segoe UI",Arial,sans-serif; color:#222; background:#fafafa; }
+  header { background:#0d6efd; color:#fff; padding:28px 24px; }
+  header h1 { margin:0; font-size:26px; }
+  header p { margin:8px 0 0; font-size:14px; opacity:.9; }
+  main { max-width:960px; margin:0 auto; padding:24px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+  .app { background:#fff; border:1px solid #e0e0e0; border-radius:10px; padding:22px; text-decoration:none; color:inherit; transition:box-shadow .15s, transform .15s; display:block; }
+  .app:hover { box-shadow:0 4px 16px rgba(0,0,0,.12); transform:translateY(-2px); }
+  .app h2 { margin:0 0 6px; font-size:20px; color:#0d6efd; }
+  .app p { margin:0; font-size:14px; color:#444; }
+  .app .url { display:block; margin-top:10px; font-size:12px; color:#888; font-family:Consolas,monospace; }
+  .note { font-size:13px; color:#666; margin-top:22px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Lukas Röseler — Shiny Apps</h1>
+  <p>Static HTML versions of the interactive Shiny apps, hosted on GitHub Pages.</p>
+</header>
+<main>
+  <div class="grid">
+    <a class="app" href="opaq/">
+      <h2>OpAQ — Open Anchoring Quest</h2>
+      <p>Interactive meta-analysis of anchoring effects: dataset overview, effect sizes, moderators, reliabilities, and anchor-extremeness analyses.</p>
+      <span class="url">/shiny/opaq/</span>
+    </a>
+    <a class="app" href="toolbox/">
+      <h2>Toolbox — Trustworthiness of Published Findings</h2>
+      <p>Toolbox to determine the trustworthiness of a selected set of findings: p-curve, z-curve, caliper test, and relative proximity analyses.</p>
+      <span class="url">/shiny/toolbox/</span>
+    </a>
+    <a class="app" href="bodypositions/">
+      <h2>Dynamic Meta-Analysis of Body Position Effects</h2>
+      <p>Meta-analysis of experimentally induced body position effects on behavioral, self-report, and physiological outcomes.</p>
+      <span class="url">/shiny/bodypositions/</span>
+    </a>
+  </div>
+  <p class="note">These are static reimplementations of the original Shiny apps (previously hosted on shinyapps.io). Source code and data are available in the associated OSF/GitHub repositories.</p>
+</main>
+</body>
+</html>

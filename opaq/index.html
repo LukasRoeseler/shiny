@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Anchoring Quest (OpAQ) — Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2E86DE;
+  --primary-2:#4EA0F0;
+  --primary-soft:#E9F2FC;
+  --primary-faint:#F3F8FE;
+  --ink:#16212f;
+  --muted:#5d6b7c;
+  --line:#dbe4ee;
+  --bg:#f6f9fd;
+  --card:#ffffff;
+  --shadow:0 1px 2px rgba(16,42,67,.06),0 8px 24px -12px rgba(16,42,67,.14);
+  --radius:14px;
+  --maxw:1220px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);
+  background:var(--bg);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--primary);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4,h5{font-weight:700;line-height:1.2;margin:0 0 .5em}
+h2{font-size:1.5rem}
+h3{font-size:1.2rem}
+h4{font-size:1.05rem;color:var(--ink)}
+h5{font-weight:500;color:var(--muted)}
+p{margin:0 0 .8em}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+/* Navbar */
+.navbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{max-width:var(--maxw);margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:10px;height:56px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;color:var(--ink);white-space:nowrap}
+.brand img{width:26px;height:26px;border-radius:6px}
+.brand small{display:block;font-size:.6rem;font-weight:500;color:var(--muted);letter-spacing:.02em}
+.nav-tabs{display:flex;gap:1px;flex-wrap:nowrap;margin-left:auto}
+.nav-tabs button{
+  background:none;border:none;cursor:pointer;font-family:inherit;font-size:.78rem;
+  color:var(--muted);padding:7px 9px;border-radius:8px;font-weight:500;white-space:nowrap;
+}
+.nav-tabs button:hover{background:var(--primary-soft);color:var(--primary)}
+.nav-tabs button.active{background:var(--primary);color:#fff;font-weight:600}
+@media(max-width:900px){.nav-tabs{flex-wrap:wrap}.brand small{display:none}}
+
+/* Sections */
+.tab-panel{display:none;padding:30px 0 70px}
+.tab-panel.active{display:block}
+
+/* Hero */
+.hero{
+  background:linear-gradient(135deg,var(--primary) 0%,#4EA0F0 55%,#9ecbf5 100%);
+  color:#fff;border-radius:var(--radius);padding:44px 40px;margin:6px 0 26px;
+  box-shadow:var(--shadow);
+}
+.hero h1{font-size:2rem;margin-bottom:8px}
+.hero p{max-width:760px;margin:0;color:#eaf4ff;font-size:1.02rem}
+.hero .pill{
+  display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+  padding:4px 12px;border-radius:999px;font-size:.78rem;font-weight:600;margin-top:16px;
+}
+
+/* Cards / stats */
+.grid{display:grid;gap:16px}
+.grid.stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.grid.cards{grid-template-columns:repeat(2,1fr)}
+@media(max-width:860px){.grid.cards{grid-template-columns:1fr}}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 22px;box-shadow:var(--shadow);
+}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+.stat .num{font-size:1.9rem;font-weight:800;color:var(--primary);line-height:1}
+.stat .lbl{font-size:.82rem;color:var(--muted);margin-top:7px;font-weight:500}
+
+.section-head{margin:8px 0 16px}
+.section-head h2{margin-bottom:4px}
+.section-head p{color:var(--muted);margin:0;max-width:900px}
+.divider{height:1px;background:var(--line);margin:28px 0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:860px){.two-col{grid-template-columns:1fr}}
+.chart{width:100%}
+
+/* Tables */
+.plain-table{border-collapse:collapse;width:100%;font-size:.85rem}
+.plain-table thead th{background:var(--primary-faint);color:var(--ink);font-weight:600;border-bottom:2px solid var(--line);padding:10px 12px;white-space:nowrap;text-align:left}
+.plain-table tbody td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.plain-table tbody tr:hover{background:var(--primary-faint)}
+.plain-table th.sortable{cursor:pointer;user-select:none}
+.plain-table th.sortable:hover{background:var(--primary-soft);color:var(--primary)}
+.plain-table tr.clickable{cursor:pointer}
+.plain-table tr.clickable.selected{background:var(--primary-soft)}
+.pt-toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.pt-toolbar input[type=search]{font-family:inherit;font-size:.88rem;padding:8px 12px;border:1px solid var(--line);border-radius:9px;min-width:220px}
+.pt-info{font-size:.82rem;color:var(--muted);margin-left:auto}
+.pt-scroll{overflow-x:auto;max-height:520px;overflow-y:auto}
+.pt-nav{display:flex;gap:8px;align-items:center;margin-top:12px}
+.dt-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);overflow-x:auto}
+
+/* Controls */
+.select-wrap{margin-bottom:18px}
+.select-wrap label{font-weight:600;display:block;margin-bottom:6px;font-size:.9rem}
+.select-wrap select{font-family:inherit;font-size:.92rem;padding:9px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;min-width:280px;color:var(--ink)}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:#fff;border:none;
+  font-family:inherit;font-size:.9rem;font-weight:600;padding:9px 16px;border-radius:10px;cursor:pointer;
+}
+.btn:hover{background:var(--primary-2);text-decoration:none}
+.btn.ghost{background:#fff;color:var(--primary);border:1px solid var(--line)}
+
+/* Callout / notes */
+.note{background:var(--primary-soft);border-left:4px solid var(--primary);border-radius:8px;padding:14px 18px;color:var(--ink);margin:14px 0}
+.note.warn{background:#fff7ed;border-left-color:#f59e0b}
+.meta-box{background:var(--primary-faint);border:1px solid var(--line);border-radius:10px;padding:14px 18px;font-size:.92rem;margin:12px 0}
+.changelog{max-height:520px;overflow:auto;font-size:.9rem;color:var(--ink)}
+.changelog h3,.changelog h5{margin:0}
+.changelog p{margin:0 0 .4em}
+.footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.86rem;margin-top:30px}
+.footer .wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.badge{display:inline-block;background:var(--primary-soft);color:var(--primary);font-size:.74rem;font-weight:600;padding:3px 9px;border-radius:999px;margin-right:4px}
+.ref-list li{margin-bottom:12px}
+.spinner{display:flex;justify-content:center;padding:40px;color:var(--muted)}
+.loading-ring{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="brand" href="#home">
+      <img src="assets/favicon.svg" alt="OpAQ logo">
+      <span>Open Anchoring Quest<small>Interactive Dashboard · OpAQ</small></span>
+    </a>
+    <div class="nav-tabs" id="navTabs">
+      <button data-tab="home" class="active">Overview</button>
+      <button data-tab="summary">Summary</button>
+      <button data-tab="effectsizes">Effect Sizes</button>
+      <button data-tab="moderators">Moderators</button>
+      <button data-tab="reliabilities">Reliabilities</button>
+      <button data-tab="distance">Anchor Distance</button>
+      <button data-tab="dataset">Dataset</button>
+      <button data-tab="literature">Literature</button>
+      <button data-tab="references">References</button>
+      <button data-tab="about">About</button>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ============ HOME ============ -->
+  <section id="home" class="tab-panel active">
+    <div class="hero">
+      <span class="pill">Version 1.1.48.95 · 10 February, 2023</span>
+      <h1>Welcome to the Open Anchoring Quest</h1>
+      <p>Research on anchoring effects is currently challenged by the lack of reliability of anchoring scores. With OpAQ we tackle this problem by meta-analytically investigating different measures of anchoring susceptibility and the factors influencing their reliability — using an open, free and ever-growing item-level dataset of thousands of trials from anchoring experiments.</p>
+    </div>
+    <div class="grid cards">
+      <div class="card">
+        <h3>What is OpAQ?</h3>
+        <p>An ever-growing, free, open, multi-study, item-level dataset that lets researchers solve current challenges in anchoring-effects research. Susceptibility to anchoring on one item is almost completely uncorrelated with susceptibility on any other item — OpAQ helps investigate why.</p>
+      </div>
+      <div class="card">
+        <h3>Status</h3>
+        <p>This project was run until early 2023 and is not actively maintained anymore. All materials are available under a CC-BY 4.0 license.</p>
+      </div>
+      <div class="card">
+        <h3>What can you do?</h3>
+        <p>Explore the dataset and the dynamic meta-analysis on anchoring effect sizes and reliabilities. Test additional hypotheses such as file-drawer effects, anchor extremeness, or age effects. Download the full dataset from the Dataset tab or from <a href="https://osf.io/ygnvb/" target="_blank" rel="noopener">OSF</a>.</p>
+      </div>
+      <div class="card">
+        <h3>Citation</h3>
+        <p>Röseler, L., Weber, L., Helgerth, K. A. C., Stich, E., Günther, M., Tegethoff, P., Wagner, F. S., … &amp; Schütz, A. (2022). <em>OpAQ: Open Anchoring Quest, Version 1.1.48.95</em>. <a href="https://dx.doi.org/10.17605/OSF.IO/YGNVB" target="_blank" rel="noopener">https://dx.doi.org/10.17605/OSF.IO/YGNVB</a></p>
+      </div>
+    </div>
+    <div class="note" style="margin-top:22px">
+      <b>Data and materials:</b> <a href="https://osf.io/ygnvb/" target="_blank" rel="noopener">https://osf.io/ygnvb/</a> ·
+      <b>Contribute:</b> lukas.roeseler@uni-muenster.de · <b>License:</b> CC-BY 4.0 International · <b>Acknowledgements:</b> University of Bamberg CatchUP+ program.
+      <br><i>This is work in progress — there may be bugs or errors in the dataset.</i>
+    </div>
+  </section>
+
+  <!-- ============ SUMMARY ============ -->
+  <section id="summary" class="tab-panel">
+    <div class="section-head">
+      <h2>OpAQ Dataset Overview</h2>
+      <p>An ever-growing dataset containing thousands of trials from anchoring experiments. Here is an overview of the current version.</p>
+    </div>
+    <div class="grid stats" id="overviewStats"></div>
+    <div class="divider"></div>
+    <div class="section-head"><h3>Study Overview</h3><p>Number of trials, unique participants and anchoring items per included study.</p></div>
+    <div class="two-col">
+      <div class="dt-wrap"><table id="cadoverviewTable" class="display" style="width:100%"></table></div>
+      <div><div id="overviewChart" class="chart" style="height:520px"></div></div>
+    </div>
+  </section>
+
+  <!-- ============ EFFECT SIZES ============ -->
+  <section id="effectsizes" class="tab-panel">
+    <div class="section-head">
+      <h2>Anchoring Effect Sizes</h2>
+      <p>Anchoring effects are said to be among the largest of (social) psychology, yet they are extremely heterogeneous. Click effects in the table and the dots will be highlighted in the forest plot below. Dashed lines indicate the REML estimate with 95% confidence intervals.</p>
+    </div>
+    <div id="metaInfo" class="meta-box"></div>
+    <div class="two-col">
+      <div class="dt-wrap"><div id="effectsizesTable" style="max-height:520px;overflow:auto"></div></div>
+      <div>
+        <div class="section-head"><h3>Funnel Plot</h3><p id="funnelInfo">Asymmetric distributions can indicate publication bias.</p></div>
+        <div id="funnelChart" class="chart" style="height:520px"></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-head"><h3>Forest Plot of Anchoring Effects</h3></div>
+    <div class="dt-wrap"><div id="forestChart" class="chart" style="height:720px"></div></div>
+  </section>
+
+  <!-- ============ MODERATORS ============ -->
+  <section id="moderators" class="tab-panel">
+    <div class="section-head">
+      <h2>Moderators of Anchoring Effects</h2>
+      <p>Choose a moderator and explore its relationship with anchoring effect sizes. Please beware that there is collinearity among some moderators.</p>
+    </div>
+    <div class="select-wrap">
+      <label for="moderatorSelect">Moderator</label>
+      <select id="moderatorSelect"></select>
+    </div>
+    <div id="moderatorText" class="meta-box"></div>
+    <div class="two-col">
+      <div class="dt-wrap"><div id="moderatorTable" style="max-height:520px;overflow:auto"></div></div>
+      <div><div id="moderatorChart" class="chart" style="height:520px"></div></div>
+    </div>
+  </section>
+
+  <!-- ============ RELIABILITIES ============ -->
+  <section id="reliabilities" class="tab-panel">
+    <div class="section-head">
+      <h2>Reliabilities of Susceptibility to Anchoring Scores</h2>
+      <p>Despite over a decade of personality-moderator research, most anchoring scores are extremely unreliable (e.g., Cronbach's Alphas below .5 in many cases). Here you can see the reliability (average inter-item correlations) of different susceptibility scores from different studies.</p>
+    </div>
+    <div class="dt-wrap"><div id="reliabilitiesTable" style="max-height:520px;overflow:auto"></div></div>
+    <div class="divider"></div>
+    <div class="section-head"><h3>Definitions of Susceptibility Scores</h3></div>
+    <div class="dt-wrap"><div id="formulasTable" style="max-width:760px"></div></div>
+    <div class="divider"></div>
+    <div class="section-head"><h3>Reliability Scores Plot</h3><p>Plot of average inter-item correlations by study and score type.</p></div>
+    <div class="dt-wrap"><div id="reliabilityForestChart" class="chart" style="height:820px"></div></div>
+  </section>
+
+  <!-- ============ DISTANCE ============ -->
+  <section id="distance" class="tab-panel">
+    <div class="section-head">
+      <h2>Distance Between Anchor and True Value</h2>
+      <p>The distance between the anchor and the true value affects anchoring-effect strength. <b>Relative distance of anchor</b> is (anchor − true value) / true value. <b>Relative adjustment</b> is (estimate − true value) / (anchor − true value). Studies without a true value have no points.</p>
+    </div>
+    <div class="dt-wrap"><div id="distanceChart" class="chart" style="height:760px"></div></div>
+  </section>
+
+  <!-- ============ DATASET ============ -->
+  <section id="dataset" class="tab-panel">
+    <div class="section-head">
+      <h2>OpAQ Dataset</h2>
+      <p>Browse, filter, and download the entire OpAQ dataset here. For variable explanations, see <a href="https://osf.io/j2xmt/" target="_blank" rel="noopener">https://osf.io/j2xmt/</a></p>
+    </div>
+    <div style="margin:14px 0">
+      <a class="btn" href="Datasets/opaq_70a.csv" download>Download Dataset (~45 MB)</a>
+    </div>
+    <div class="dt-wrap"><div id="datasetTable" style="max-height:560px;overflow:auto"></div></div>
+    <div class="divider"></div>
+    <div class="section-head"><h3>Changelog</h3><p>Changes for the OpAQ website and the dataset, starting on 10 March 2022 with opaq_61a.csv and OpAQ v1.1.38.90.</p></div>
+    <div class="card changelog" id="changelog"></div>
+  </section>
+
+  <!-- ============ LITERATURE ============ -->
+  <section id="literature" class="tab-panel">
+    <div class="section-head">
+      <h2>Anchoring Literature</h2>
+      <p>An overview of research on anchoring. Variables show whether at least one dataset for a reference is openly available (<b>Open data</b>), meets the OpAQ inclusion criteria (<b>Eligible</b>), and is already included (<b>Included</b>).</p>
+    </div>
+    <div class="dt-wrap"><div id="literatureTable" style="max-height:560px;overflow:auto"></div></div>
+  </section>
+
+  <!-- ============ REFERENCES ============ -->
+  <section id="references" class="tab-panel">
+    <div class="section-head"><h2>References</h2></div>
+    <div class="card">
+      <h4>References making use of the OpAQ Dataset</h4>
+      <ul class="ref-list">
+        <li>Röseler, L., &amp; Schütz, A. (2022, March 9). <em>Hanging the Anchor Off a New Ship: A Meta-Analysis of Anchoring Effects.</em> <a href="https://doi.org/10.31234/osf.io/wf2tn" target="_blank" rel="noopener">https://doi.org/10.31234/osf.io/wf2tn</a></li>
+        <li>Röseler, L., Weber, L., Helgerth, K., Stich, E., Günther, M., Tegethoff, P., … &amp; Schütz, A. (2022). The Open Anchoring Quest Dataset: Anchored Estimates from 96 Studies on Anchoring Effects. <em>Journal of Open Psychology Data, 10</em>: 16. DOI: <a href="https://doi.org/10.5334/jopd.67" target="_blank" rel="noopener">10.5334/jopd.67</a></li>
+        <li>Röseler, L., Weber, L., Stich, E., Helgerth, K., Günther, M., Wagner, F.-S., &amp; Schütz, A. (in press). Measurements of Susceptibility to Anchoring are Unreliable: Meta-Analytic Evidence From More Than 50,000 Anchored Estimates. <em>Meta Psychology.</em> <a href="https://doi.org/10.31234/osf.io/b6t35" target="_blank" rel="noopener">https://doi.org/10.31234/osf.io/b6t35</a></li>
+        <li>Weber, L., &amp; Röseler, L. (2022, August 11). <em>Testing the Reliability of Anchoring Susceptibility Scores.</em> <a href="https://doi.org/10.31234/osf.io/2kfh3" target="_blank" rel="noopener">https://doi.org/10.31234/osf.io/2kfh3</a></li>
+      </ul>
+      <hr>
+      <h4>Talks about the OpAQ</h4>
+      <ul class="ref-list">
+        <li>Röseler, L., Weber, L., Stich, E., Günther, M., &amp; Schütz, A. (2022, March). The Open Anchoring Quest (OpAQ): Explaining variance of the heterogeneous but large anchoring effects. Talk at the 64th Conference of Experimental Psychologists, Köln, Germany.</li>
+        <li>Röseler, L., Weber, L., Stich, E., Günther, M., &amp; Schütz, A. (2021, September). The Open Anchoring Quest (OpAQ): Tackling the reliability problem and boosting the power of anchoring research. Talk at the Biennial Conference of the German Psychological Society (DPPD) Section, Ulm, Germany.</li>
+        <li>Röseler, L. (2021, March). Are some people more susceptible to anchoring effects than others? Talk at the 63rd Conference of Experimental Psychologists, Ulm, Germany.</li>
+      </ul>
+      <hr>
+      <h4>References Currently Included in the OpAQ Dataset</h4>
+      <div id="referenceList" class="ref-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about" class="tab-panel">
+    <div class="section-head"><h2>About</h2></div>
+    <div class="card" id="aboutText"></div>
+    <div class="divider"></div>
+    <div class="card"><h4>Author Contributions (CRediT)</h4><div id="contributions"></div></div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <span>Open Anchoring Quest · Tracking anchoring effects across studies · <a href="https://osf.io/ygnvb/" target="_blank" rel="noopener">OSF project</a> · <a href="https://dx.doi.org/10.17605/OSF.IO/YGNVB" target="_blank" rel="noopener">DOI</a></span>
+    <span>Built as a static dashboard from the ShinyApp. This project is not actively maintained. · data from <a href="https://osf.io/ygnvb/" target="_blank" rel="noopener">https://osf.io/ygnvb/</a></span>
+    <span>Migrated from the former Shiny app at <a href="https://metaanalyses.shinyapps.io/OpAQ/" target="_blank" rel="noopener">metaanalyses.shinyapps.io/OpAQ/</a> → now hosted at <a href="https://lukasroeseler.github.io/shiny/opaq/" target="_blank" rel="noopener">lukasroeseler.github.io/shiny/opaq/</a>.</span>
+  </div>
+</footer>
+
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  const DATA = {};
+  let ES = [], MODS = {}, META = {}, DIST = [], RIWIDE = [];
+  const REF_COLORS = {};
+  const PALETTE = ['#2E86DE','#4EA0F0','#1B7FD4','#7FB6EC','#0f5fa8','#5B9BD5','#8DB4E2','#3A7BBF','#6FA8DC','#2b6cb0'];
+  const rendered = {};
+
+  function colorFor(ref){
+    if(!(ref in REF_COLORS)){ REF_COLORS[ref] = PALETTE[Object.keys(REF_COLORS).length % PALETTE.length]; }
+    return REF_COLORS[ref];
+  }
+
+  async function loadAll(){
+    const base = '';
+    const files = {
+      overview:'data/overview.json', cadoverview:'data/cadoverview.json',
+      meta:'data/meta.json', effectsizes:'data/effectsizes.json',
+      moderators:'data/moderators.json', reliabilities:'data/reliabilities.json',
+      formulae:'data/reliabilities_formulae.json', riwide:'data/riwide.json',
+      literature:'data/literature.json', distance:'data/distance.json',
+      references:'data/references.json'
+    };
+    await Promise.all(Object.keys(files).map(async k=>{
+      const r = await fetch(base+files[k]);
+      DATA[k] = await r.json();
+    }));
+    ES = DATA.effectsizes; MODS = DATA.moderators; META = DATA.meta;
+    DIST = DATA.distance; RIWIDE = DATA.riwide;
+  }
+
+  // ---------- navigation ----------
+  function renderTab(name){
+    if(rendered[name]) { resizeCharts(); return; }
+    rendered[name] = true;
+    switch(name){
+      case 'summary': renderOverviewStats(); renderCadoverviewTable(); renderOverviewChart(); break;
+      case 'effectsizes': renderMetaInfo(); renderEffectsizesTable(); renderForestChart(); renderFunnelChart(); break;
+      case 'moderators': initModerators(); break;
+      case 'reliabilities': renderReliabilities(); break;
+      case 'distance': renderDistance(); break;
+      case 'dataset': loadDatasetTab(); renderChangelog(); break;
+      case 'literature': renderLiterature(); break;
+      case 'references': renderReferences(); break;
+      case 'about': renderAbout(); break;
+    }
+    resizeCharts();
+  }
+
+  function initNav(){
+    const tabs = document.querySelectorAll('#navTabs button');
+    tabs.forEach(b=>{
+      b.addEventListener('click',()=>{
+        document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+        document.querySelectorAll('#navTabs button').forEach(x=>x.classList.remove('active'));
+        document.getElementById(b.dataset.tab).classList.add('active');
+        b.classList.add('active');
+        renderTab(b.dataset.tab);
+      });
+    });
+  }
+
+  function resizeCharts(){
+    const ids = ['overviewChart','funnelChart','forestChart','moderatorChart','reliabilityForestChart','distanceChart'];
+    ids.forEach(id=>{ const el=document.getElementById(id); if(el&&el.__opaq_ready) Plotly.Plots.resize(el); });
+  }
+
+  // ---------- summary ----------
+  function renderOverviewStats(){
+    const labels = DATA.overview.labels, values = DATA.overview.values;
+    const el = document.getElementById('overviewStats');
+    el.innerHTML = labels.map((l,i)=>`<div class="stat"><div class="num">${values[i].toLocaleString()}</div><div class="lbl">${l}</div></div>`).join('');
+  }
+
+  function renderCadoverviewTable(){
+    const rows = DATA.cadoverview.map(r => [r.Reference, r.N, r.Items, r.Trials]);
+    paginatedTable('cadoverviewTable', ['Reference','N','Items','Trials'], rows, { pageSize: 15, sortCol: 3, sortDir: 'desc' });
+  }
+
+  function renderOverviewChart(){
+    const rows = DATA.cadoverview;
+    const totals = {Trials:0,Items:0,N:0};
+    rows.forEach(r=>{totals.Trials+=r.Trials;totals.Items+=r.Items;totals.N+=r.N;});
+    const vars=['Trials','Items','N'];
+    const data = rows.map(r=>({
+      type:'bar', name:r.Reference,
+      x:vars.map(v=>v),
+      y:vars.map(v=> r[v]/totals[v]),
+      marker:{color:colorFor(r.Reference)},
+      hovertemplate:'%{fullData.name}<br>%{x}: %{y:.1%}',
+      showlegend:false
+    }));
+    Plotly.newPlot('overviewChart', data, {
+      barmode:'stack',
+      xaxis:{title:'Variable', type:'category', categoryorder:'array', categoryarray:vars},
+      yaxis:{title:'Percentage', tickformat:'.0%'},
+      margin:{l:55,r:10,t:20,b:45},
+      hovermode:'closest'
+    },{displayModeBar:false,responsive:true});
+    document.getElementById('overviewChart').__opaq_ready = true;
+  }
+
+  // ---------- meta info ----------
+  function renderMetaInfo(){
+    const m = META;
+    const p = m.pval<0.001 ? '< .001' : '= '+m.pval.toFixed(3);
+    const eggersSignif = META.eggers['p.value'] < .05 ? 'indicates' : 'does not indicate';
+    const pi = m['pi.lb'].toFixed(3)+', '+m['pi.ub'].toFixed(3);
+    document.getElementById('metaInfo').innerHTML =
+      `<b>Current effect size:</b> <i>g</i> = ${m.b.toFixed(3)}, <i>p</i> ${p}, 95% CI [${m['ci.lb'].toFixed(3)}, ${m['ci.ub'].toFixed(3)}], 95% PI [${pi}], σ² = ${m.sigma2.toFixed(3)}, <i>N<sub>total</sub></i> = ${m.nmeta.toLocaleString()}, <i>k</i> = ${m.k}`;
+    document.getElementById('funnelInfo').innerHTML =
+      `Asymmetric distributions of effects can indicate publication bias. Grey areas represent effects with <i>p</i> &lt; .100 (light), <i>p</i> &lt; .050 (grey), and <i>p</i> &lt; .010 (dark). The dashed line is the mean effect size. Egger's test ${eggersSignif} funnel plot asymmetry, <i>t</i>(${m.eggers.df}) = ${m.eggers.statistic.toFixed(2)}, <i>p</i> = ${m.eggers['p.value'].toFixed(3)}, τ = ${m.eggers.tau.toFixed(2)}.`;
+  }
+
+  // ---------- effectsizes table + forest + funnel ----------
+  const selectedES = new Set();
+  function renderEffectsizesTable(){
+    const rows = ES.map(e => [e.reference_short, e.item, e.anchorinterval, e.n, e.g, e.glower, e.gupper]);
+    paginatedTable('effectsizesTable', ['Reference','Item','Anchor interval','n','g','g lower','g upper'], rows, {
+      pageSize: 10, sortCol: 4, sortDir: 'desc',
+      onRowClick: (idx, tr) => {
+        if(selectedES.has(idx)) { selectedES.delete(idx); tr.classList.remove('selected'); }
+        else { selectedES.add(idx); tr.classList.add('selected'); }
+        updateSelection();
+      },
+      onRender: () => {
+        document.querySelectorAll('#effectsizesTable tr[data-i]').forEach(tr => {
+          if(selectedES.has(parseInt(tr.dataset.i, 10))) tr.classList.add('selected');
+        });
+      }
+    });
+  }
+
+  function updateSelection(){
+    const colors = ES.map((e,i) => selectedES.has(i) ? '#0f5fa8' : colorFor(e.reference_short));
+    const sizes = ES.map((e,i) => selectedES.has(i) ? 13 : 7);
+    const fg = document.getElementById('forestChart');
+    if(fg) Plotly.restyle(fg, {'marker.color': [colors], 'marker.size': [sizes]}, [0]);
+    const fu = document.getElementById('funnelChart');
+    if(fu) Plotly.restyle(fu, {'marker.color': [colors], 'marker.size': [sizes]}, [3]);
+  }
+
+  function renderForestChart(){
+    const y = ES.map(e=>e.item);
+    const traces = [{
+      type:'scatter', mode:'markers', x:ES.map(e=>e.g), y:y,
+      error_x:{array:ES.map(e=>Math.abs(e.gupper-e.glower)/2), symmetric:true, color:'rgba(46,134,222,.5)', thickness:1},
+      marker:{color:ES.map(e=>colorFor(e.reference_short)), size:7, opacity:.85, line:{width:0}},
+      hoverinfo:'text',
+      text:ES.map(e=>`${e.reference_short}<br>${e.item}<br>g = ${e.g}`), name:'Effect'
+    }];
+    const b = META.b;
+    const layout = {
+      title:{text:'Forest plot of anchoring effects', font:{size:15}},
+      xaxis:{title:"Hedges's g",
+        range:[Math.floor(Math.min(...ES.map(e=>e.glower))), Math.ceil(Math.max(...ES.map(e=>e.gupper)))],
+        zeroline:true, zerolinecolor:'#cbd5e1', gridcolor:'#eef3f9', showgrid:true},
+      yaxis:{title:'', automargin:true, tickfont:{size:9}},
+      shapes: [
+        {type:'line',x0:b,x1:b,y0:0,y1:1,yref:'paper',line:{color:'#1B7FD4',dash:'dash',width:2}},
+        {type:'line',x0:META['ci.lb'],x1:META['ci.lb'],y0:0,y1:1,yref:'paper',line:{color:'#4EA0F0',dash:'dot',width:1}},
+        {type:'line',x0:META['ci.ub'],x1:META['ci.ub'],y0:0,y1:1,yref:'paper',line:{color:'#4EA0F0',dash:'dot',width:1}}
+      ],
+      margin:{l:170,r:24,t:44,b:50}, showlegend:false,
+      height:Math.max(600, ES.length*4),
+      hovermode:'closest'
+    };
+    Plotly.newPlot('forestChart', traces, layout, {displayModeBar:false,responsive:true});
+    document.getElementById('forestChart').__opaq_ready = true;
+  }
+
+  function renderFunnelChart(){
+    const es = ES;
+    const maxse = Math.max(...es.map(e=>e.se))*1.05;
+    const fm = META.b;
+    const pts = [];
+    [[2.576,'rgba(120,120,120,.10)'],[1.96,'rgba(120,120,120,.16)'],[1.645,'rgba(120,120,120,.22)']].forEach(([z,c])=>{
+      pts.push({type:'scatter',x:[fm-z*maxse, fm, fm+z*maxse], y:[maxse,0,maxse], fill:'toself', fillcolor:c, line:{color:'rgba(0,0,0,0)'}, hoverinfo:'skip', showlegend:false});
+    });
+    const pubShapes = {0:'circle',1:'diamond',2:'square'};
+    const pubMap = {};
+    es.forEach(e=>{ if(!(e.published in pubMap)) pubMap[e.published]=Object.keys(pubMap).length; });
+    const pointTrace = {
+      type:'scatter', mode:'markers', x:es.map(e=>e.g), y:es.map(e=>e.se),
+      marker:{color:es.map(e=>colorFor(e.reference_short)), size:7, opacity:.7,
+        symbol:es.map(e=>pubShapes[pubMap[e.published]]||'circle')},
+      text:es.map(e=>`${e.reference_short}<br>g=${e.g}`), hoverinfo:'text', showlegend:false
+    };
+    const layout = {
+      xaxis:{title:"Hedges's g", range:[fm-2.576*maxse, fm+2.576*maxse]},
+      yaxis:{title:'Standard Error', autorange:'reversed'},
+      margin:{l:50,r:20,t:20,b:45}, height:520
+    };
+    Plotly.newPlot('funnelChart', pts.concat([pointTrace]), layout, {displayModeBar:false,responsive:true});
+    document.getElementById('funnelChart').__opaq_ready = true;
+  }
+
+  // ---------- moderators ----------
+  function initModerators(){
+    const sel = document.getElementById('moderatorSelect');
+    const labels = {
+      published:'Published', prereg:'Pre-Registered', yearofpublication:'Year of Publication',
+      mean_age:'Age', prop_female:'Gender', nationality:'Nationality', direction:'Known direction of adjustment',
+      incentive:'Monetary incentive', comparative_question:'Comparative Question', anchordistance:'Mean Relative Anchor Distance',
+      experiment_type:'Type of Experiment', stimulitype:'Type of Stimulus', anchortype:'Type of Anchor',
+      anchormanipulation:'Type of Anchor Manipulation', tasktype:'Type of Anchoring Task', scaletype:'Type of Response Scale',
+      preregtype:'Type of Preregistration'
+    };
+    Object.keys(MODS).forEach(k=>{
+      const o=document.createElement('option'); o.value=k; o.textContent=labels[k]||k; sel.appendChild(o);
+    });
+    sel.addEventListener('change',()=>renderModerator(sel.value));
+    renderModerator(sel.value);
+  }
+
+  function renderModerator(mod){
+    const info = MODS[mod];
+    const m = info.test;
+    const sig = m.QMp < .05 ? '' : '<b>not</b> ';
+    const p = m.QMp < .001 ? '< .001' : '= '+m.QMp.toFixed(3);
+    document.getElementById('moderatorText').innerHTML =
+      `The effect of <b>${mod}</b> on anchoring effect sizes is ${sig}significant at the 5% level. Test of moderators: <i>F</i>(${m.QMdf[0]}, ${m.QMdf[1]}) = ${m.QM.toFixed(2)}, <i>p</i> ${p}.`;
+    renderModeratorTable(info, mod);
+    renderModeratorChart(mod, info);
+  }
+
+  function renderModeratorTable(info, mod){
+    if(info.type==='numeric'){
+      const t = info.table[0] || {};
+      paginatedTable('moderatorTable', ['n','Mean','SD','Median','Min','Max','β'],
+        [[t.n,t.mean,t.sd,t.median,t.min,t.max,t.beta]], { pageSize: 100, sortCol: null });
+    } else {
+      const rows = info.table.map(r => {
+        const lv = r.Moderator_Levels;
+        const sub = ES.filter(e => e[mod] === lv);
+        const gs = sub.map(e => e.g);
+        const n = gs.length;
+        const mean = gs.reduce((a,b)=>a+b,0) / n;
+        const sd = n > 1 ? Math.sqrt(gs.reduce((a,b)=>a+(b-mean)*(b-mean),0) / (n-1)) : 0;
+        return [lv, n, mean.toFixed(2), sd.toFixed(2), r.g, r.ci_lower, r.ci_upper];
+      });
+      paginatedTable('moderatorTable', ['Moderator Level','n','Mean','SD','g','CI lower','CI upper'], rows, { pageSize: 100 });
+    }
+  }
+
+  function renderModeratorChart(mod, info){
+    const es = ES;
+    if(info.type==='numeric'){
+      const x = es.map(e=>e[mod]), y = es.map(e=>e.g);
+      const traces = [{
+        type:'scatter', mode:'markers', x:x, y:y,
+        marker:{color:es.map(e=>colorFor(e.reference_short)), size:7, opacity:.8},
+        text:es.map(e=>`${e.reference_short}<br>${e.item}`), hoverinfo:'text', showlegend:false
+      }];
+      if(info.smooth && info.smooth.length){
+        traces.push({type:'scatter', mode:'lines', x:info.smooth.map(s=>s.x), y:info.smooth.map(s=>s.y), line:{color:'#0f5fa8',width:3}, name:'Smooth', showlegend:false});
+      }
+      Plotly.newPlot('moderatorChart', traces, {
+        xaxis:{title:mod, automargin:true}, yaxis:{title:"Hedges's g", zeroline:true, zerolinecolor:'#cbd5e1'},
+        margin:{l:55,r:20,t:20,b:50}, height:520
+      },{displayModeBar:false,responsive:true});
+    } else {
+      const levels = [...new Set(es.map(e=>e[mod]))].sort();
+      const traces = [];
+      levels.forEach(lv=>{
+        const sub = es.filter(e=>e[mod]===lv);
+        traces.push({
+          type:'violin', x:sub.map(e=>e.g), y:Array(sub.length).fill(lv), name:lv,
+          box:{visible:false}, meanline:{visible:true,color:'#0f5fa8'}, points:'all', pointpos:0,
+          jitter:0.4, marker:{color:'rgba(46,134,222,.6)',size:4}, line:{color:'#2E86DE',width:1},
+          hoverinfo:'skip', showlegend:false
+        });
+      });
+      Plotly.newPlot('moderatorChart', traces, {
+        yaxis:{title:mod, type:'category', automargin:true, tickfont:{size:11}},
+        xaxis:{title:"Hedges's g", zeroline:true, zerolinecolor:'#cbd5e1', automargin:true},
+        margin:{l:55,r:20,t:20,b:50}, height:Math.max(420, levels.length*34)
+      },{displayModeBar:false,responsive:true});
+    }
+    document.getElementById('moderatorChart').__opaq_ready = true;
+  }
+
+  // ---------- reliabilities ----------
+  function simpleTable(containerId, headers, rows){
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    let html = '<table class="plain-table"><thead><tr>';
+    headers.forEach(h => html += '<th>' + h + '</th>');
+    html += '</tr></thead><tbody>';
+    rows.forEach(r => {
+      html += '<tr>';
+      r.forEach(v => html += '<td>' + (v == null ? '' : v) + '</td>');
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  }
+
+  function paginatedTable(containerId, headers, rows, opts){
+    opts = opts || {};
+    const pageSize = opts.pageSize || 25;
+    const n = rows.length;
+    let view = rows.map((_, i) => i);
+    let page = 0, col = (opts.sortCol != null ? opts.sortCol : null), dir = (opts.sortDir || 'desc');
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    const toolbar = document.createElement('div'); toolbar.className = 'pt-toolbar';
+    const search = document.createElement('input'); search.type = 'search'; search.placeholder = 'Search…';
+    const info = document.createElement('span'); info.className = 'pt-info';
+    toolbar.appendChild(search); toolbar.appendChild(info);
+    el.appendChild(toolbar);
+    const wrap = document.createElement('div'); wrap.className = 'pt-scroll';
+    el.appendChild(wrap);
+    const nav = document.createElement('div'); nav.className = 'pt-nav';
+    el.appendChild(nav);
+
+    function cmp(a, b, c){
+      let av = a[c], bv = b[c];
+      if(av == null) av = ''; if(bv == null) bv = '';
+      if(typeof av === 'number' && typeof bv === 'number') return av - bv;
+      return String(av).localeCompare(String(bv), undefined, {numeric:true});
+    }
+    function applySort(){
+      if(col == null) return;
+      view.sort((a, b) => {
+        const r = cmp(rows[a], rows[b], col);
+        return dir === 'asc' ? r : -r;
+      });
+    }
+    applySort();
+
+    function render(){
+      const total = view.length;
+      const pages = Math.max(1, Math.ceil(total / pageSize));
+      if(page >= pages) page = pages - 1;
+      if(page < 0) page = 0;
+      const start = page * pageSize, end = Math.min(start + pageSize, total);
+      let html = '<table class="plain-table"><thead><tr>';
+      headers.forEach((h, i) => {
+        let arrow = col === i ? (dir === 'asc' ? ' ▲' : ' ▼') : '';
+        html += '<th data-col="' + i + '" class="sortable">' + h + arrow + '</th>';
+      });
+      html += '</tr></thead><tbody>';
+      for(let i = start; i < end; i++){
+        const idx = view[i], row = rows[idx];
+        html += '<tr data-i="' + idx + '">';
+        row.forEach(v => html += '<td>' + (v == null ? '' : v) + '</td>');
+        html += '</tr>';
+      }
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+      wrap.querySelectorAll('th.sortable').forEach(th => {
+        th.addEventListener('click', () => {
+          const c = parseInt(th.dataset.col, 10);
+          if(col === c) dir = dir === 'asc' ? 'desc' : 'asc';
+          else { col = c; dir = 'asc'; }
+          page = 0; render();
+        });
+      });
+      if(opts.onRowClick){
+        wrap.querySelectorAll('tr[data-i]').forEach(tr => {
+          tr.classList.add('clickable');
+          tr.addEventListener('click', () => opts.onRowClick(parseInt(tr.dataset.i, 10), tr));
+        });
+      }
+      if(opts.onRender) opts.onRender();
+      info.textContent = total + ' rows · page ' + (page + 1) + '/' + pages;
+      nav.innerHTML = '';
+      if(pages > 1){
+        const prev = document.createElement('button'); prev.className = 'btn ghost'; prev.textContent = '‹ Prev'; prev.disabled = page === 0;
+        const next = document.createElement('button'); next.className = 'btn ghost'; next.textContent = 'Next ›'; next.disabled = page >= pages - 1;
+        prev.onclick = () => { page--; render(); };
+        next.onclick = () => { page++; render(); };
+        nav.appendChild(prev); nav.appendChild(next);
+      }
+    }
+
+    search.oninput = () => {
+      const q = search.value.toLowerCase();
+      view = rows.map((_, i) => i).filter(i => rows[i].some(v => String(v).toLowerCase().includes(q)));
+      applySort();
+      page = 0; render();
+    };
+    render();
+  }
+
+  function renderReliabilitiesTable(){
+    const rows = DATA.reliabilities.map(r=>[r.reference,r.items,r.n,r.estimate,r.adjustment,r.absadjustment,r.score,r.restr_score,r.g,r.itemtypelist]);
+    simpleTable('reliabilitiesTable', ['Reference','Items','n','estimate','adjustment','absadjustment','score','restr_score','g','Item types'], rows);
+  }
+  function renderFormulasTable(){
+    const rows = DATA.formulae.map(r=>[r.Score,r.Interpretation]);
+    simpleTable('formulasTable', ['Score','Interpretation'], rows);
+  }
+  function renderReliabilities(){
+    renderReliabilitiesTable();
+    renderFormulasTable();
+    renderReliabilityForest();
+  }
+
+  function renderReliabilityForest(){
+    const scores=['adjustment','absadjustment','score','restr_score'];
+    const colors={adjustment:'#1B7FD4',absadjustment:'#7FB6EC',score:'#e11d48',restr_score:'#f59e0b'};
+    const refs=[...new Set(RIWIDE.map(r=>r.reference))];
+    const refIndex={}; refs.forEach((rf,i)=>refIndex[rf]=i);
+    const traces = scores.map(s=>{
+      const sub = RIWIDE.filter(r=>r.score===s);
+      return {type:'scatter',mode:'markers',x:sub.map(r=>r.r),y:sub.map(r=>refIndex[r.reference]),name:s,
+        marker:{color:colors[s],size:8,opacity:.85},hoverinfo:'text',text:sub.map(r=>`${r.reference}<br>${s}: ${r.r}`)};
+    });
+    const maxRefLen = Math.max(...refs.map(r=>r.length));
+    const leftMargin = Math.min(470, maxRefLen*6.3 + 70);
+    Plotly.newPlot('reliabilityForestChart', traces, {
+      xaxis:{title:'Average inter-item correlation',zeroline:true,zerolinecolor:'#cbd5e1',range:[0,1]},
+      yaxis:{title:'Reference',tickmode:'array',tickvals:refs.map((_,i)=>i),ticktext:refs,
+             range:[refs.length-0.5,-0.5],tickfont:{size:10}},
+      margin:{l:leftMargin,r:20,t:20,b:50},height:820
+    },{displayModeBar:false,responsive:true});
+    document.getElementById('reliabilityForestChart').__opaq_ready = true;
+  }
+
+  // ---------- distance ----------
+  function renderDistance(){
+    const refs = [...new Set(DIST.map(d=>d.ref))];
+    const traces = refs.map(rf=>{
+      const sub = DIST.filter(d=>d.ref===rf);
+      return {type:'scattergl',mode:'markers',x:sub.map(d=>d.x),y:sub.map(d=>d.y),name:rf,
+        marker:{color:colorFor(rf),size:4,opacity:.6},hoverinfo:'skip',showlegend:false};
+    });
+    Plotly.newPlot('distanceChart', traces, {
+      xaxis:{title:'Relative Distance of Anchor',range:[-1,2],zeroline:true,zerolinecolor:'#cbd5e1'},
+      yaxis:{title:'Relative Adjustment',range:[0,10],zeroline:true,zerolinecolor:'#cbd5e1'},
+      margin:{l:55,r:20,t:20,b:55},height:760
+    },{displayModeBar:false,responsive:true});
+    document.getElementById('distanceChart').__opaq_ready = true;
+  }
+
+  // ---------- dataset ----------
+  let datasetLoaded=false;
+  async function loadDatasetTab(){
+    if(datasetLoaded) return;
+    const el = document.getElementById('datasetTable');
+    el.innerHTML = '<div class="spinner"><div><div class="loading-ring"></div>Loading dataset…</div></div>';
+    try{
+      const r = await fetch('data/dataset.json');
+      const d = await r.json();
+      const cols = d.columns, rows = d.rows;
+      const n = rows[cols[0]].length;
+      const dataArr = new Array(n);
+      for(let i=0;i<n;i++){
+        const row = new Array(cols.length);
+        for(let c=0;c<cols.length;c++) row[c] = rows[cols[c]][i];
+        dataArr[i] = row;
+      }
+      el.innerHTML='';
+      paginatedTable('datasetTable', cols, dataArr, { pageSize: 25 });
+      datasetLoaded=true;
+    }catch(e){ el.innerHTML='<div class="note warn">Could not load the dataset.</div>'; }
+  }
+
+  // ---------- literature ----------
+  function renderLiterature(){
+    const rows = DATA.literature.map(r => [r.ID, r.Reference, r.Source, r['Open data'], r.Eligible, r.Included, r.Notes, r['Date added']]);
+    paginatedTable('literatureTable', ['ID','Reference','Source','Open data','Eligible','Included','Notes','Date added'], rows, { pageSize: 25 });
+  }
+
+  // ---------- references / about (static) ----------
+  function renderReferences(){
+    const refs = DATA.references || [];
+    document.getElementById('referenceList').innerHTML = refs.map(r=>`<li>${r}</li>`).join('');
+  }
+
+  function renderAbout(){
+    document.getElementById('aboutText').innerHTML =
+      `<h4>OpAQ-App · Version 1.1.48.95</h4>
+       <p><b>Last Update:</b> 10 February, 2023</p>
+       <p><b>Citation:</b> Röseler, L., Weber, L., Helgerth, K. A. C., Stich, E., Günther, M., Tegethoff, P., Wagner, F. S., Ambrus, E., Antunovic, M., Barrera, F., Halali, E., Ioannidis, K., McKay, R., Milstein, N., Molden, D. C., Papenmeier, F., Rinn, R., Schreiter, M. L., Zimdahl, M., … &amp; Schütz, A. (2022). <i>OpAQ: Open Anchoring Quest, Version 1.1.48.95</i>. <a href="https://dx.doi.org/10.17605/OSF.IO/YGNVB" target="_blank" rel="noopener">https://dx.doi.org/10.17605/OSF.IO/YGNVB</a></p>
+       <p><b>Data and Materials:</b> <a href="https://osf.io/ygnvb/" target="_blank" rel="noopener">https://osf.io/ygnvb/</a></p>
+       <p><b>Contribute:</b> lukas.roeseler@uni-muenster.de</p>
+       <p><b>License:</b> CC-BY Attribution 4.0 International</p>
+       <p><b>Acknowledgements:</b> University of Bamberg CatchUP+ program.</p>
+       <p><b>Important note:</b> This is work in progress. Please beware that there might be bugs or errors in the dataset.</p>`;
+    const contrib = [
+      ['Röseler, L.','Conceptualization, Data curation, Formal analysis, Funding acquisition, Investigation, Project administration, Resources, Software, Supervision, Validation, Visualization, Writing – original draft'],
+      ['Weber, L.','Data curation, Investigation, Resources, Software, Visualization'],
+      ['Helgerth, K. A. C.','Validation'],
+      ['Stich, E.','Data curation, Software'],
+      ['Günther, M.','Data curation'],
+      ['Tegethoff, P.','Investigation, Data Curation, Resources, Validation'],
+      ['Wagner, F. S.','Investigation, Resources'],
+      ['Ambrus, E.','Resources, Data Curation'],
+      ['Antunovic, M.','Resources, Data Curation'],
+      ['Barrera, F.','Resources, Data Curation'],
+      ['Halali, E.','Resources, Data Curation'],
+      ['Ioannidis, K.','Resources, Data Curation'],
+      ['McKay, R.','Resources, Data Curation'],
+      ['Milstein, N.','Resources, Data Curation'],
+      ['Molden, D. C.','Resources, Data Curation'],
+      ['Papenmeier, F.','Resources, Data Curation'],
+      ['Rinn, R.','Resources, Data Curation'],
+      ['Schreiter, M. L.','Resources, Data Curation'],
+      ['Zimdahl, M.','Resources, Data Curation'],
+      ['Allen, E.','Resources'],
+      ['Bahník, Š.','Resources'],
+      ['Baumeister, R. F.','Resources'],
+      ['Bermeitinger, C.','Resources'],
+      ['Bickenbach, S. L. C.','Resources'],
+      ['Blank, P. A.','Resources'],
+      ['Blower, F. B. N.','Resources'],
+      ['Bögler, H. L.','Resources'],
+      ['Boruchowicz, C.','Resources'],
+      ['Boo, F. L.','Resources'],
+      ['Bühler, R. L.','Resources'],
+      ['Burgmer, P.','Resources'],
+      ['Cheek, N. N.','Resources'],
+      ['Dohle, S.','Resources'],
+      ['Dorsch, L.','Resources'],
+      ['Dück, M. S.','Resources'],
+      ['Fels, S.-A.','Resources'],
+      ['Fischer, A. L.','Resources'],
+      ['Frech, M.-L.','Resources'],
+      ['Freira, L.','Resources'],
+      ['Friedinger, K.','Resources'],
+      ['Genschow, O.','Resources'],
+      ['Harris, A.','Resources'],
+      ['Hartig, B.','Resources'],
+      ['Häusser, J. A.','Resources'],
+      ['Hedgebeth, M.','Resources'],
+      ['Henkel, M.','Resources'],
+      ['Horvath, D.','Resources'],
+      ['Hügel, J. C.','Resources'],
+      ['Igna, E. L. E.','Resources'],
+      ['Imhoff, R.','Resources'],
+      ['Intelmann, P.','Resources'],
+      ['Karg, A. H.','Resources'],
+      ['Klamar, A.','Resources'],
+      ['Klein, C.','Resources'],
+      ['Klusmann, B.','Resources'],
+      ['Knappe, E.','Resources'],
+      ['Köppel, L.-M.','Resources'],
+      ['Koßmann, L.','Resources'],
+      ['Kraft, P.','Resources'],
+      ['Kroworsch, M. K.','Resources'],
+      ['Krueger, S. M.','Resources'],
+      ['Kühling, S.','Resources'],
+      ['Lagator, S.','Resources'],
+      ['Lammers, J.','Resources'],
+      ['Loschelder, D. D.','Resources'],
+      ['Navajas, J.','Resources'],
+      ['Norem, J. K.','Resources'],
+      ['Novak, J.','Resources'],
+      ['Onuki, Y.','Resources'],
+      ['Page, E.','Resources'],
+      ['Panse, F.','Resources'],
+      ['Pavlovic, Z.','Resources'],
+      ['Pearton, J.','Resources'],
+      ['Rebholz, T. R.','Resources'],
+      ['Rodgers, S.','Resources'],
+      ['Röseler, J. J.','Resources'],
+      ['Rostekova, A.','Resources'],
+      ['Roßmaier, K. V.','Resources'],
+      ['Sartorio, M.','Resources'],
+      ['Scheelje, L.','Resources'],
+      ['Schindler, S.','Resources'],
+      ['Schreiner, N. B.','Resources'],
+      ['Seida, C.','Resources'],
+      ['Shanks, D. R.','Resources'],
+      ['Siems, M.-C.','Resources'],
+      ['Stitz, M.','Resources'],
+      ['Starkulla, M.','Resources'],
+      ['Stäglich, P.','Resources'],
+      ['Thies, K.','Resources'],
+      ['Thum, E.','Resources'],
+      ['Undorf, M.','Resources'],
+      ['Unger, B. D.','Resources'],
+      ['Urlichich, D.','Resources'],
+      ['Vadillo, M. A.','Resources'],
+      ['Wackershauser-Sablotny, V.','Resources'],
+      ['Wessel, I.','Resources'],
+      ['Wolf, H.','Resources'],
+      ['Zhou, A.','Resources'],
+      ['Schütz, A.','Funding acquisition, Resources, Supervision']
+    ];
+    document.getElementById('contributions').innerHTML =
+      contrib.map(c=>`<p><b>${c[0]}:</b> ${c[1]}</p>`).join('');
+  }
+
+  function renderChangelog(){
+    const items = [
+      ['10.02.2023','Version 1.1.48.97 · opaq_70a.csv','Temporarily removed “Bickenbach et al., 2021” and “Seida &amp; Röseler” studies due to errors in the item names or values.'],
+      ['19.01.2023','Version 1.1.47.97 · opaq_69a.csv','Added dataset. Updated OpAQ References and OpAQ Literature.'],
+      ['04.11.2022','Version 1.1.46.96 · opaq_68a.csv','Error in the processing of Bahník, 2021b detected and corrected (affected reliabilities due to format of participant_id). Added entry to literature table.'],
+      ['28.10.2022','Version 1.1.44.96 · opaq_67a.csv','Fixed an error where the true value for Knappe et al. was coded wrongly. Added the OpAQ dataset publication to the literature list.'],
+      ['06.09.2022','Version 1.1.43.96 · opaq_67a.csv','Added dataset and contributors.'],
+      ['12.08.2022','Version 1.1.43.95 · opaq_66a.csv','Added a table with all published and unpublished reports of anchoring from our literature search, personal communications, calls for data, etc.'],
+      ['27.07.2022','Version 1.1.42.95','Added a contributor.'],
+      ['26.07.2022','Version 1.1.42.95 · opaq_66a.csv','Changed order of contributors. Corrected duplicate contributor. Added dataset and contributor: Ambrus et al., 2021. Replaced xlsx-package with openxlsx-package due to bugs.'],
+      ['31.03.2022','Version 1.1.42.94 · opaq_65a.csv','Added contributors. Changed wording of anchoring items for Ioannidis et al., 2020 and Bergman et al., 2010. Corrected preregistration for Cheek &amp; Norem, 2020.'],
+      ['26.03.2022','Version 1.1.41.94 · opaq_65a.csv','Added information about the table’s variables in the Anchoring Effect Sizes description. Added study and contributor.'],
+      ['16.03.2022','Version 1.1.41.93 · opaq_64a.csv','Added study and contributors: Ioannidis et al., 2020. Added new category (3) to variable incentive. Coded Bergman et al., 2010 incentive as 3. Fixed indexing error in reliabilities table.'],
+      ['15.03.2022','Version 1.1.40.92 · opaq_63a.csv','Added study and contributor: Imhoff &amp; Barker, 2022, Study 2.'],
+      ['14.03.2022','Version 1.1.40.91 · opaq_62a.csv','Added new contributors. Changed spelling for some moderators. Added study: Bahník, 2021b; Bahník, 2021 changed to 2021a.'],
+      ['10.03.2022','Version 1.1.39.90 · opaq_61b.csv','Molden, 2020: changed true value to 55 lbs; changed anchoring item. Schreiter et al., 2021: corrected sex codings. Bahník, 2021: corrected year. Added variable nationality. Added contributors. Moved Call for Data into About tab. Added Changelog to Summary tab.']
+    ];
+    document.getElementById('changelog').innerHTML =
+      `<h3><b>Changelog</b></h3><h5>This is a list of changes for the OpAQ website and the dataset starting on 10 March, 2022 with opaq_61a.csv (dataset) and OpAQ v1.1.38.90.</h5><br>` +
+      items.map(it=>`<p><b>${it[0]}</b><br><i>${it[1]}</i><br>– ${it[2]}</p>`).join('<br>');
+  }
+
+  // ---------- boot ----------
+  async function boot(){
+    await loadAll();
+    initNav();
+    renderTab('summary');
+  }
+
+  document.addEventListener('DOMContentLoaded', boot);
+})();
+</script>
+</body>
+</html>
