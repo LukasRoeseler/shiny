@@ -1,0 +1,65 @@
+[
+  {
+    "Model": "Random-Effects Multilevel Model",
+    "g": 0.338,
+    "LCL": 0.264,
+    "UCL": 0.412,
+    "k": "294"
+  },
+  {
+    "Model": "Robust Variance Estimation",
+    "g": 0.359,
+    "LCL": 0.264,
+    "UCL": 0.455,
+    "k": "108"
+  },
+  {
+    "Model": "Trim-and-fill",
+    "g": 0.079,
+    "LCL": -0.031,
+    "UCL": 0.188,
+    "k": "151"
+  },
+  {
+    "Model": "P-uniform star",
+    "g": 0.374,
+    "LCL": 0.254,
+    "UCL": 0.505,
+    "k": "108"
+  },
+  {
+    "Model": "Hedges-Vevea Selection Model",
+    "g": 0.354,
+    "LCL": 0.229,
+    "UCL": 0.48,
+    "k": "108"
+  },
+  {
+    "Model": "P-Curve (first value)",
+    "g": 0.37,
+    "LCL": null,
+    "UCL": null,
+    "k": "54"
+  },
+  {
+    "Model": "P-Curve (last value)",
+    "g": 0.387,
+    "LCL": null,
+    "UCL": null,
+    "k": "39"
+  },
+  {
+    "Model": "Precision Effect Test",
+    "g": -0.085,
+    "LCL": -0.212,
+    "UCL": 0.042,
+    "k": "108"
+  },
+  {
+    "Model": "Precision Effect Estimate using Standard Error",
+    "g": 0.096,
+    "LCL": 0.007,
+    "UCL": 0.185,
+    "k": "108"
+  }
+]

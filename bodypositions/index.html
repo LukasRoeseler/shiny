@@ -10,8 +10,14 @@
   header { background:#004a99; color:#fff; padding:20px 24px; }
   header h1 { margin:0; font-size:24px; }
   header p { margin:6px 0 0; font-size:13px; opacity:.9; }
-  main { max-width:1000px; margin:0 auto; padding:20px 24px 60px; }
-  h2 { margin-top:30px; border-bottom:2px solid #eee; padding-bottom:6px; }
+  main { max-width:1050px; margin:0 auto; padding:20px 24px 60px; }
+  h2 { margin-top:26px; border-bottom:2px solid #eee; padding-bottom:6px; }
+  h3 { margin-top:22px; }
+  .tabs { display:flex; flex-wrap:wrap; gap:6px; border-bottom:2px solid #ddd; padding:0 0 10px; margin:16px 0; }
+  .tab { background:#fff; border:1px solid #ccc; border-radius:6px 6px 0 0; padding:9px 18px; cursor:pointer; font-size:14px; }
+  .tab.active { background:#004a99; color:#fff; border-color:#004a99; }
+  .tabpanel { display:none; }
+  .tabpanel.active { display:block; }
   .status { background:#fff3cd; border:1px solid #ffecb5; color:#664d03; border-radius:6px; padding:10px 14px; margin:14px 0; font-size:14px; }
   .status.ok { background:#d1e7dd; border-color:#badbcc; color:#0f5132; }
   .controls { background:#fff; border:1px solid #ddd; border-radius:8px; padding:16px; margin:16px 0; }
@@ -33,8 +39,15 @@
   .fbox { position:absolute; top:50%; height:16px; transform:translateY(-50%); background:#004a99; }
   .fzero { position:absolute; top:0; bottom:0; width:2px; background:#c00; }
   .fnum { text-align:right; font-variant-numeric:tabular-nums; }
+  table.data { border-collapse:collapse; width:100%; background:#fff; margin:12px 0; }
+  table.data th, table.data td { border:1px solid #ddd; padding:8px 10px; text-align:left; font-size:14px; }
+  table.data th { background:#f0f4f8; }
+  table.data td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .plotimg { max-width:100%; height:auto; background:#fff; border:1px solid #eee; border-radius:6px; padding:8px; }
+  .scroll { max-height:560px; overflow:auto; border:1px solid #ddd; border-radius:6px; background:#fff; padding:8px; }
   .note { font-size:12px; color:#777; }
   a { color:#004a99; }
+  .section { background:#fff; border:1px solid #ddd; border-radius:8px; padding:14px 18px; margin:14px 0; }
 </style>
 </head>
 <body>
@@ -45,59 +58,154 @@
 <main>
   <h2>About</h2>
   <p>Migrated from the former Shiny app at <a href="https://metaanalyses.shinyapps.io/bodypositions/" target="_blank">metaanalyses.shinyapps.io/bodypositions/</a> → now hosted at <a href="https://lukasroeseler.github.io/shiny/bodypositions/" target="_blank">lukasroeseler.github.io/shiny/bodypositions/</a>.</p>
-  <p>This app runs a meta-analysis of experimentally induced body position (posture/pose) effects on behavioral, self-report, and physiological dependent variables. Select the set of studies (DV type and preregistration) and click <b>Analyze data</b> — the meta-analysis is computed <b>live in R</b> (WebR, in your browser) using a DerSimonian–Laird random-effects model.</p>
+  <p>This app runs a dynamic meta-analysis of experimentally induced body position (posture/pose) effects on behavioral, self-report, and physiological dependent variables. All analyses below are computed with R using the same methods as the original app (multilevel random-effects meta-analysis, trim-and-fill, p-uniform, Hedges–Vevea selection model, PET–PEESE, p-curve, z-curve, Egger's test).</p>
   <p><b>Citation:</b> Röseler, L., Körner, R., &amp; Schütz, A. (2021). <i>Dynamic Meta-Analysis</i>. <a href="https://osf.io/ns65r/" target="_blank">https://osf.io/ns65r/</a></p>
   <p><b>Data and Materials:</b> <a href="https://osf.io/vz4a6/" target="_blank">https://osf.io/vz4a6/</a> · <b>Add study:</b> <a href="https://www.soscisurvey.de/submissions_bodypositions" target="_blank">Submission portal</a></p>
 
-  <div class="status" id="status">Initializing R engine (WebR)…</div>
-
-  <h2>Controls</h2>
-  <div class="controls">
-    <fieldset>
-      <legend>DV type</legend>
-      <label><input type="checkbox" name="dv" value="Physiology" checked> Physiology</label>
-      <label><input type="checkbox" name="dv" value="Self-Reports" checked> Self-Reports</label>
-      <label><input type="checkbox" name="dv" value="Behavior" checked> Behavior</label>
-    </fieldset>
-    <fieldset>
-      <legend>Preregistration</legend>
-      <label><input type="checkbox" name="pr" value="Preregistered" checked> Preregistered</label>
-      <label><input type="checkbox" name="pr" value="Not preregistered" checked> Not preregistered</label>
-    </fieldset>
-    <button class="btn" id="analyze">Analyze data</button>
+  <div class="tabs">
+    <button class="tab active" data-tab="summary">Summary</button>
+    <button class="tab" data-tab="forest">Forest Plot</button>
+    <button class="tab" data-tab="qrppb">QRP / Publication Bias</button>
+    <button class="tab" data-tab="outliers">Outlier Diagnostics</button>
+    <button class="tab" data-tab="about">About / Add Study</button>
   </div>
 
-  <h2>Results (random-effects meta-analysis)</h2>
-  <div class="cards" id="cards"></div>
+  <section class="tabpanel active" id="summary">
+    <h3>Sample Overview</h3>
+    <table class="data" id="sample"><thead><tr><th>Articles</th><th>Studies</th><th>Effects</th><th>Sample size</th></tr></thead><tbody></tbody></table>
+    <p class="note">Number of research reports (articles), independent studies, effects, and total sample size for the selected set of studies (all DV types, all preregistration statuses, all years).</p>
 
-  <h2>Forest plot of effect sizes</h2>
-  <div class="forest" id="forest"></div>
-  <p class="note">Error bars are 95% confidence intervals. Red dashed line at 0 = no effect. g = Hedges' g.</p>
+    <h3>Effect Size Estimates</h3>
+    <p class="note">Estimates of Hedges' g from nine estimation models. LCL = Lower Confidence Limit, UCL = Upper Confidence Limit, k = number of effects. First reported values are selected for analyses.</p>
+    <img class="plotimg" src="bp_forest_estimates.png" alt="Forest plot of effect size estimates">
+    <table class="data" id="estimates"><thead><tr><th>Model</th><th>g</th><th>LCL</th><th>UCL</th><th>k</th></tr></thead><tbody></tbody></table>
 
-  <h2>Notes</h2>
-  <p class="note">First reported values are selected for analyses. k = number of effects. The full set of supplementary figures (funnel plots, p-curves, trim-and-fill analyses, sensitivity analyses) is available in the <a href="https://osf.io/vz4a6/" target="_blank">OSF project</a>.</p>
+    <h3>Live meta-analysis (computed in your browser with R)</h3>
+    <div class="status" id="status">Initializing R engine (WebR)…</div>
+    <div class="controls">
+      <fieldset>
+        <legend>DV type</legend>
+        <label><input type="checkbox" name="dv" value="Physiology" checked> Physiology</label>
+        <label><input type="checkbox" name="dv" value="Self-Reports" checked> Self-Reports</label>
+        <label><input type="checkbox" name="dv" value="Behavior" checked> Behavior</label>
+      </fieldset>
+      <fieldset>
+        <legend>Preregistration</legend>
+        <label><input type="checkbox" name="pr" value="Preregistered" checked> Preregistered</label>
+        <label><input type="checkbox" name="pr" value="Not preregistered" checked> Not preregistered</label>
+      </fieldset>
+      <button class="btn" id="analyze">Analyze data</button>
+    </div>
+    <div class="cards" id="cards"></div>
+    <div class="forest" id="forest-plot"></div>
+    <p class="note">This interactive section runs a DerSimonian–Laird random-effects meta-analysis live in R (WebR) on the selected subset. The static plots above use the full (default) set of studies.</p>
+  </section>
+
+  <section class="tabpanel" id="forest">
+    <h3>Forest Plot of All Included Studies</h3>
+    <p class="note">Scroll to see all studies. Error bars are 95% confidence intervals; the red line is g = 0.</p>
+    <div class="scroll"><img class="plotimg" src="bp_forest_studies.png" alt="Forest plot of all studies"></div>
+  </section>
+
+  <section class="tabpanel" id="qrppb">
+    <h3>Publication Bias and Questionable Research Practices</h3>
+    <p class="note">First reported values are selected for analyses.</p>
+
+    <h3>Funnel Plot of Effects</h3>
+    <img class="plotimg" src="bp_funnel.png" alt="Funnel plot of effects">
+
+    <h3>Egger's Test of Funnel Plot Asymmetry</h3>
+    <table class="data" id="eggers"><thead><tr><th>Intercept</th><th>Tau²</th><th>t</th><th>p</th></tr></thead><tbody></tbody></table>
+
+    <h3>P-Curve of Effects</h3>
+    <img class="plotimg" src="bp_pcurve.png" alt="P-curve of effects">
+    <p class="note">P-curve can only be plotted if there are 2 or more significant effects.</p>
+
+    <h3>Z-Curve of Effects (EM via EM, no bootstrapping)</h3>
+    <img class="plotimg" src="bp_zcurve.png" alt="Z-curve of effects">
+  </section>
+
+  <section class="tabpanel" id="outliers">
+    <h3>Distribution of Effect Sizes</h3>
+    <img class="plotimg" src="bp_violin.png" alt="Distribution of effect sizes">
+
+    <h3>Heterogeneity (REML)</h3>
+    <table class="data" id="heterogeneity"><thead><tr><th>Sigma² Level 1</th><th>Sigma² Level 2</th><th>Tau²</th><th>Q</th><th>Q (p)</th></tr></thead><tbody></tbody></table>
+    <p class="note">More tools for outlier diagnostics may be added later.</p>
+  </section>
+
+  <section class="tabpanel" id="about">
+    <div class="section">
+      <h3>About</h3>
+      <p><b>Version:</b> v0.72 · <b>Last update:</b> 07 July 2022</p>
+      <p><b>Citation:</b> Röseler, L., Körner, R., &amp; Schütz, A. (2021). <i>Dynamic Meta-Analysis</i>. Retrieved from <a href="https://osf.io/ns65r/">https://osf.io/ns65r/</a></p>
+      <p><b>Data and Materials:</b> <a href="https://osf.io/vz4a6/">https://osf.io/vz4a6/</a></p>
+      <p><b>Add Study:</b> Submit new or missing studies here: <a href="https://www.soscisurvey.de/submissions_bodypositions">https://www.soscisurvey.de/submissions_bodypositions</a></p>
+      <p><b>Contact:</b> lukas.roeseler@uni-bamberg.de</p>
+    </div>
+    <div class="section">
+      <h3>Methods</h3>
+      <p>Analyses use a multilevel random-effects model (restricted maximum likelihood / maximum likelihood with Knapp–Hartung adjustment) accounting for the nesting of multiple dependent variables within studies (random = ~1 | id2/id1). Publication-bias analyses include trim-and-fill, the p-uniform* method, the Hedges–Vevea selection model, PET–PEESE, p-curve, and z-curve. R packages used: metafor, meta, robumeta, puniform, weightr, zcurve, dmetar (pcurve).</p>
+    </div>
+  </section>
 </main>
 
 <script type="module">
 import { WebR } from "https://webr.r-wasm.org/latest/webr.mjs";
 
-let webR = null;
+// ===== Precomputed data (computed with R / metafor, meta, zcurve, puniform, weightr, robumeta) =====
+const SAMPLE = [{Articles:84, Studies:108, Effects:294, Samplesize:9094}];
+const ESTIMATES = [
+  {Model:"Random-Effects Multilevel Model", g:0.338, LCL:0.264, UCL:0.412, k:"294"},
+  {Model:"Robust Variance Estimation", g:0.359, LCL:0.264, UCL:0.455, k:"108"},
+  {Model:"Trim-and-fill", g:0.079, LCL:-0.031, UCL:0.188, k:"151"},
+  {Model:"P-uniform star", g:0.374, LCL:0.254, UCL:0.505, k:"108"},
+  {Model:"Hedges-Vevea Selection Model", g:0.354, LCL:0.229, UCL:0.48, k:"108"},
+  {Model:"P-Curve (first value)", g:0.37, LCL:null, UCL:null, k:"54"},
+  {Model:"P-Curve (last value)", g:0.387, LCL:null, UCL:null, k:"39"},
+  {Model:"Precision Effect Test", g:-0.085, LCL:-0.212, UCL:0.042, k:"108"},
+  {Model:"Precision Effect Estimate using Standard Error", g:0.096, LCL:0.007, UCL:0.185, k:"108"}
+];
+const EGGERS = [{Intercept:1.9118, Tau2:1.8465, t:5.5961, p:"< .001"}];
+const HET = [{Sigma2_Level1:0.091, Sigma2_Level2:0.0603, Tau:0, Q:1327.18, Q_p:"< .001"}];
 
-// Precomputed results (shown immediately; used if WebR is unavailable)
+function fillTable(id, rows){
+  const tb = document.querySelector(`#${id} tbody`);
+  tb.innerHTML = rows.map(r => {
+    const cells = Object.keys(r).map(k => `<td class="num">${r[k] === null ? '—' : r[k]}</td>`).join('');
+    return `<tr>${cells}</tr>`;
+  }).join('');
+}
+fillTable('sample', SAMPLE);
+fillTable('estimates', ESTIMATES);
+fillTable('eggers', EGGERS);
+fillTable('heterogeneity', HET);
+
+// ===== Tabs =====
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tabpanel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  });
+});
+
+// ===== Live WebR meta-analysis =====
+let webR = null;
 const PRECOMPUTED = [
-  {group:"Overall", es:0.2667, lo:0.2152, hi:0.3183, k:306, I2:84.5},
-  {group:"Physiology", es:-0.0655, lo:-0.1497, hi:0.0187, k:50, I2:66.2},
-  {group:"Self-Reports", es:0.3304, lo:0.2649, hi:0.3959, k:195, I2:82.3},
-  {group:"Behavior", es:0.3087, lo:0.2098, hi:0.4076, k:61, I2:68.8},
-  {group:"Preregistered", es:0.0875, lo:0.0169, hi:0.1580, k:32, I2:31.1},
-  {group:"Not preregistered", es:0.2918, lo:0.2345, hi:0.3490, k:274, I2:85.7}
+  {group:"Overall", es:0.2551, lo:0.2101, hi:0.3001, k:294, I2:77.9},
+  {group:"Physiology", es:-0.0670, lo:-0.1412, hi:0.0072, k:50, I2:52.4},
+  {group:"Self-Reports", es:0.3291, lo:0.2679, hi:0.3903, k:190, I2:78.9},
+  {group:"Behavior", es:0.2805, lo:0.1830, hi:0.3780, k:54, I2:63.9},
+  {group:"Preregistered", es:0.0713, lo:0.0033, hi:0.1393, k:29, I2:23.5},
+  {group:"Not preregistered", es:0.2810, lo:0.2313, hi:0.3307, k:265, I2:79.5}
 ];
 
 function render(rows){
   const cards = document.getElementById('cards');
   cards.innerHTML = rows.map(r => `
     <div class="card"><b>${r.group}</b><span class="es">g = ${Number(r.es).toFixed(3)}</span><span class="ci">95% CI [${Number(r.lo).toFixed(3)}, ${Number(r.hi).toFixed(3)}]<br>k = ${r.k} · I² = ${Number(r.I2).toFixed(1)}%</span></div>`).join('');
-
   const lo = -0.2, hi = 0.5, span = hi - lo;
   let f = '<div class="frow head"><span>Group</span><span></span><span></span><span>g [95% CI]</span></div>';
   for (const r of rows){
@@ -106,7 +214,7 @@ function render(rows){
     const line = x(0);
     f += `<div class="frow"><span>${r.group}</span><span>k=${r.k}</span><div class="ftrack"><div class="fline"></div><div class="fzero" style="left:${line}%"></div><div class="fbox" style="left:${left}%;width:${Math.max(width,0.5)}%"></div></div><span class="fnum">${Number(r.es).toFixed(3)} [${Number(r.lo).toFixed(3)}, ${Number(r.hi).toFixed(3)}]</span></div>`;
   }
-  document.getElementById('forest').innerHTML = f;
+  document.getElementById('forest-plot').innerHTML = f;
 }
 
 function setStatus(text, ok){

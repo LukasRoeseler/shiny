@@ -73,15 +73,20 @@
 
   <section class="panel" id="tab-pcurve">
     <h1>P-Curve</h1>
-    <p>The p-curve analysis (Simonsohn et al., 2014) assesses the p-value distribution. If the null hypothesis is true, p-values will be distributed uniformly; if false, p-values will be right-skewed toward zero.</p>
-    <p class="small">See the original <a href="https://www.p-curve.com/app4/" target="_blank">p-curve app</a>. In this static version, p-curve is computed with the R backend (see the precomputed results in the source repository).</p>
+    <p>The p-curve analysis (Simonsohn et al., 2014) assesses the p-value distribution. If the null hypothesis is true, p-values will be distributed uniformly; if false, p-values will be right-skewed toward zero. The p-curve below shows the distribution of significant p-values for the <b>example dataset</b> (JCP 2022).</p>
+    <img src="tb_pcurve.png" alt="P-curve of the example dataset" style="max-width:100%;background:#fff;border:1px solid #eee;border-radius:6px;padding:8px">
+    <p class="small">Computed with the R <code>dmetar::pcurve</code> function (k = 138 significant effects). See the original <a href="https://www.p-curve.com/app4/" target="_blank">p-curve app</a> for interactive analyses.</p>
   </section>
 
   <section class="panel" id="tab-zcurve">
     <h1>Z-Curve</h1>
-    <p>The z-curve (Bartoš &amp; Schimmack, 2022) uses the z-score distribution's shape for significant effects to estimate the Expected Discovery Rate (EDR), Observed Discovery Rate (ODR), and Expected Replicability Rate (ERR).</p>
-    <p>In this static version, z-curve is computed with the R backend. Below are the results for the example dataset.</p>
-    <div id="zcurveresult" class="box small">Load a dataset to see z-curve results.</div>
+    <p>The z-curve (Bartoš &amp; Schimmack, 2022) uses the z-score distribution's shape for significant effects to estimate the Expected Discovery Rate (EDR), Observed Discovery Rate (ODR), and Expected Replicability Rate (ERR). Below are the results for the <b>example dataset</b> (JCP 2022, n = 150 test statistics).</p>
+    <img src="tb_zcurve.png" alt="Z-curve of the example dataset" style="max-width:100%;background:#fff;border:1px solid #eee;border-radius:6px;padding:8px">
+    <div class="box small">
+      <b>Z-Curve (EM, no bootstrapping) — example dataset</b><br>
+      EDR = 0.127 · ODR = 0.92 · ERR = 0.419
+    </div>
+    <p class="small">Computed with the R <code>zcurve</code> package (method = "EM", bootstrap = 0). For a larger dataset, estimation may take a few seconds to multiple minutes.</p>
   </section>
 
   <section class="panel" id="tab-caliper">
@@ -98,9 +103,16 @@
   <section class="panel" id="tab-rp">
     <h1>Relative Proximity</h1>
     <p>The relative proximity (RP) index (Götz et al., 2021) is the ratio of a confidence interval's proximity to zero to its width. CIs that exclude (include) zero yield a positive (negative) RP. The threshold RP = 0 should not induce inconsistencies; selection biases shift more values to the positive side. A binomial test compares the number of positive and negative RPs in a band around 0.</p>
+
+    <h3>Relative Proximity for Significance Tests</h3>
     <div class="box"><label>Bandwidth around 0: <input type="range" id="bwrp" min="0.01" max="1" step="0.01" value="0.10" oninput="rpParam()"> <span id="bwrpv">0.10</span></label></div>
     <div id="rp_result" class="box small"></div>
     <canvas id="rp_canvas" width="800" height="300"></canvas>
+
+    <h3>Relative Proximity for Mediation Tests</h3>
+    <div class="box"><label>Bandwidth around 0: <input type="range" id="bwrpmed" min="0.01" max="1" step="0.01" value="0.10" oninput="rpParam()"> <span id="bwrpmedv">0.10</span></label></div>
+    <div id="rpmed_result" class="box small"></div>
+    <canvas id="rpmed_canvas" width="800" height="300"></canvas>
   </section>
 
   <section class="panel" id="tab-about">
@@ -215,7 +227,6 @@ function processPaste(text) {
   renderDataTable();
   renderCaliper();
   renderRP();
-  renderZCurve();
   document.getElementById('uploadmsg').textContent = 'Processed ' + DATA.length + ' rows.';
 }
 
@@ -274,29 +285,29 @@ function renderCaliper(){
 }
 
 // ---------- relative proximity ----------
-function rpParam(){ renderRP(); }
-function computeRP(){
+function rpParam(){ renderRPSig(); renderRPMed(); }
+function rpValue(lo, up){
+  const min = Math.min(Math.abs(lo), Math.abs(up));
+  let rp = min/(up-lo);
+  const sign = (lo>0 || up<0);
+  if (!sign) rp = -rp;
+  return rp;
+}
+function computeRPSig(){
   if (!DATA) return [];
   return DATA.filter(d=>d.es!=null && d.se!=null).map(d=>{
     const esLower = Math.abs(d.es) - 1.96*d.se;
     const esUpper = Math.abs(d.es) + 1.96*d.se;
-    const min = Math.min(Math.abs(esLower), Math.abs(esUpper));
-    let rp = min/(esUpper-esLower);
-    const sign = (esLower>0 || esUpper<0);
-    if (!sign) rp = -rp;
-    return {rp, med:false};
-  }).concat(
-    DATA.filter(d=>d.medLow!=null && d.medUp!=null && String(d.medLow).toLowerCase()!=='na' && String(d.medUp).toLowerCase()!=='na' && d.medLow!=='' && d.medUp!=='').map(d=>{
-      const lo=Number(d.medLow), up=Number(d.medUp);
-      const min = Math.min(Math.abs(lo), Math.abs(up));
-      let rp = min/(up-lo);
-      const sign = (lo>0 || up<0);
-      if (!sign) rp = -rp;
-      return {rp, med:true};
-    })
-  );
+    return rpValue(esLower, esUpper);
+  });
 }
-function renderRP(){
+function computeRPMed(){
+  if (!DATA) return [];
+  return DATA.filter(d=>d.medLow!=null && d.medUp!=null && String(d.medLow).toLowerCase()!=='na' && String(d.medUp).toLowerCase()!=='na' && d.medLow!=='' && d.medUp!=='').map(d=>{
+    return rpValue(Number(d.medLow), Number(d.medUp));
+  });
+}
+function renderRPSig(){
   const bw = parseFloat(document.getElementById('bwrp').value);
   document.getElementById('bwrpv').textContent = bw.toFixed(2);
   const out = document.getElementById('rp_result');
@@ -304,24 +315,33 @@ function renderRP(){
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,canvas.width,canvas.height);
   if (!DATA) { out.textContent = 'Load a dataset first.'; return; }
-  const rps = computeRP().map(o=>o.rp);
+  const rps = computeRPSig();
   let neg=0, pos=0;
   for (const rp of rps){ if (rp<0 && rp>-bw) neg++; else if (rp>=0 && rp<bw) pos++; }
   const p = binomTwoSided(neg, neg+pos, 0.5);
-  out.innerHTML = `<b>Relative proximity (bandwidth ${bw.toFixed(2)})</b><br>`+
+  out.innerHTML = `<b>Relative proximity — significance tests (bandwidth ${bw.toFixed(2)})</b><br>`+
     `Negative (below 0): <b>${neg}</b> | Positive (above 0): <b>${pos}</b><br>`+
     `Binomial test p = ${p.toExponential(2)}`;
   drawHistogram(ctx, rps, 'Relative Proximity', -bw, bw, 0);
 }
-
-// ---------- z-curve (static example) ----------
-function renderZCurve(){
-  const el = document.getElementById('zcurveresult');
-  // precomputed on example JCP dataset via R (zcurve package, EM, no bootstrap)
-  el.innerHTML = `<b>Example dataset (JCP 2022, n=170 tests):</b><br>`+
-    `Z-Curve (EM, no bootstrapping) — EDR ≈ 0.71, ERR ≈ 0.65, ODR ≈ 0.97.<br>`+
-    `<span class="small">Note: z-curve is computed with the R <code>zcurve</code> package in the original app.</span>`;
+function renderRPMed(){
+  const bw = parseFloat(document.getElementById('bwrpmed').value);
+  document.getElementById('bwrpmedv').textContent = bw.toFixed(2);
+  const out = document.getElementById('rpmed_result');
+  const canvas = document.getElementById('rpmed_canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if (!DATA) { out.textContent = 'Load a dataset first.'; return; }
+  const rps = computeRPMed();
+  let neg=0, pos=0;
+  for (const rp of rps){ if (rp<0 && rp>-bw) neg++; else if (rp>=0 && rp<bw) pos++; }
+  const p = binomTwoSided(neg, neg+pos, 0.5);
+  out.innerHTML = `<b>Relative proximity — mediation CIs (bandwidth ${bw.toFixed(2)})</b><br>`+
+    `Negative (below 0): <b>${neg}</b> | Positive (above 0): <b>${pos}</b><br>`+
+    `Binomial test p = ${p.toExponential(2)}`;
+  drawHistogram(ctx, rps, 'Relative Proximity', -bw, bw, 0);
 }
+function renderRP(){ renderRPSig(); renderRPMed(); }
 
 // ---------- chart ----------
 function drawHistogram(ctx, values, xlabel, v1, v2, v0){
